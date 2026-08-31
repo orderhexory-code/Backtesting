@@ -1,4 +1,4 @@
-"""Configuration parser and validator."""
+"""Configuration parser and validator supporting dynamic risk percentage."""
 from __future__ import annotations
 import hashlib
 from pathlib import Path
@@ -41,9 +41,10 @@ class StopLossConfig(BaseModel):
 
 
 class PositionConfig(BaseModel):
-    mode: Literal["fixed_contracts", "fixed_risk"] = "fixed_contracts"
+    mode: Literal["fixed_contracts", "fixed_risk", "percent_risk"] = "percent_risk"
     contracts: int = 1
     risk_per_trade: float = 100.0
+    risk_percent: float = 1.0
 
 
 class AccountConfig(BaseModel):
@@ -57,7 +58,7 @@ class RiskConfig(BaseModel):
 
 class ExecutionConfig(BaseModel):
     commission_per_contract: float = 0.0
-    slippage_ticks: int = 0
+    slippage_ticks: int = 1
     intrabar_mode: Literal["conservative", "optimistic"] = "conservative"
 
 
