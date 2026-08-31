@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NASDAQ Strategy Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #F2F4F7;
+      --card-bg: #FFFFFF;
+      --card-sub: #F8F9FB;
+      --border: #EAECF0;
+      --text-main: #0F172A;
+      --text-muted: #64748B;
+      --text-sub: #94A3B8;
+      --black-btn: #0F172A;
+      --black-btn-hover: #1E293B;
+      --cyan-accent: #0284C7;
+      --green: #10B981;
+      --green-bg: #ECFDF5;
+      --red: #F43F5E;
+      --red-bg: #FFF1F2;
+      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+      --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.06);
+      --radius-lg: 24px;
+      --radius-md: 16px;
+      --radius-pill: 9999px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text-main);
+      padding: 24px 16px;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* Top Hero Balance Card (Matching Screenshot) */
+    .hero-card {
+      background: var(--card-bg);
+      border-radius: var(--radius-lg);
+      padding: 28px 24px 24px;
+      box-shadow: var(--shadow-md);
+      border: 1px solid var(--border);
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .hero-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .profile-pill {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #38BDF8, #6366F1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #FFF;
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .strategy-tag {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+
+    .strategy-subtag {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: var(--radius-pill);
+      background: var(--green-bg);
+      color: var(--green);
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--green);
+      animation: pulse 2s infinite;
+    }
+
+    /* Balance Amount */
+    .balance-section {
+      text-align: center;
+      margin: 10px 0 24px;
+    }
+
+    .balance-label {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .balance-amount {
+      font-size: 42px;
+      font-weight: 800;
+      letter-spacing: -1px;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .balance-currency {
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+
+    /* Solid Black Pill Buttons (Matching Screenshot) */
+    .action-buttons {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    .btn-pill {
+      flex: 1;
+      background: var(--black-btn);
+      color: #FFFFFF;
+      border: none;
+      padding: 14px 20px;
+      border-radius: var(--radius-pill);
+      font-size: 15px;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.15s ease;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
+      text-decoration: none;
+    }
+    .btn-pill:hover {
+      background: var(--black-btn-hover);
+      transform: translateY(-1px);
+    }
+    .btn-pill.secondary {
+      background: var(--card-sub);
+      color: var(--text-main);
+      border: 1px solid var(--border);
+      box-shadow: none;
+    }
+    .btn-pill.secondary:hover {
+      background: #EDF0F4;
+    }
+
+    /* Floating Switch Indicator */
+    .floating-action {
+      position: absolute;
+      right: -14px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--cyan-accent);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 6px 16px rgba(2, 132, 199, 0.35);
+      cursor: pointer;
+      border: 3px solid #FFF;
+    }
+
+    /* Sub-Cards Grid (Matching CAD / USD mini cards in Screenshot) */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .sub-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .sub-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .sub-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .sub-card-tag {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .sub-card-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      background: #F1F5F9;
+    }
+
+    .sub-card-id {
+      font-size: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-sub);
+    }
+
+    .sub-card-val {
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .sub-card-footer {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 4px;
+      font-weight: 600;
+    }
+
+    /* Chart Containers (Pure White Cards with Native SVG) */
+    .grid-chart-2 {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    @media (max-width: 860px) {
+      .grid-chart-2 { grid-template-columns: 1fr; }
+    }
+
+    .chart-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .chart-card-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 4px;
+    }
+    .chart-card-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+
+    .svg-container {
+      width: 100%;
+      height: 240px;
+      position: relative;
+    }
+    svg {
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+
+    /* Transactions / Trade Log Card (Matching bottom sheet in screenshot) */
+    .transactions-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      box-shadow: var(--shadow-md);
+    }
+
+    .transactions-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .transactions-title {
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    .see-all-link {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--cyan-accent);
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    /* Transaction Row Item */
+    .trade-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .trade-row:last-child { border-bottom: none; }
+    .trade-row:hover { background: var(--card-sub); border-radius: var(--radius-md); padding: 14px 10px; }
+
+    .trade-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .trade-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+    }
+    .trade-icon.long { background: var(--green-bg); color: var(--green); }
+    .trade-icon.short { background: var(--red-bg); color: var(--red); }
+
+    .trade-info-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+    .trade-info-sub {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .trade-right {
+      text-align: right;
+    }
+    .trade-pnl {
+      font-size: 15px;
+      font-weight: 800;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .trade-pnl.win { color: var(--green); }
+    .trade-pnl.loss { color: var(--red); }
+
+    .trade-r {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+
+    /* Modal for Trade Audit Details */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 100;
+    }
+    .modal-card {
+      background: #FFFFFF;
+      border-radius: var(--radius-lg);
+      max-width: 500px;
+      width: 100%;
+      padding: 24px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    }
+
+    @keyframes pulse {
+      0% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(1.3); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  
+  <!-- Hero Card (Exact Neobank Style from Screenshot) -->
+  <div class="hero-card">
+    <div class="hero-header">
+      <div class="profile-pill">
+        <div class="avatar">NQ</div>
+        <div>
+          <div class="strategy-tag" id="metaSymbol">NASDAQ 100 FUTURES</div>
+          <div class="strategy-subtag" id="metaStrategy">1H-15M-5M-1M Trailing Engine</div>
+        </div>
+      </div>
+      <div class="status-badge">
+        <span class="status-dot"></span>
+        <span id="metaStatus">Verified Backtest</span>
+      </div>
+    </div>
+
+    <!-- Balance Section -->
+    <div class="balance-section">
+      <div class="balance-label">Strategy Net Balance</div>
+      <div class="balance-amount">
+        <span id="heroNetPnl">$0.00</span>
+        <span class="balance-currency">USD</span>
+      </div>
+    </div>
+
+    <!-- Solid Black Pill Buttons -->
+    <div class="action-buttons">
+      <a class="btn-pill" id="downloadCsvBtn" href="trades.csv" download>
+        <span>↓</span> Download CSV
+      </a>
+      <button class="btn-pill secondary" onclick="window.location.reload()">
+        <span>↻</span> Refresh
+      </button>
+    </div>
+
+    <!-- Cyan Floating Action Button (Matching Screenshot) -->
+    <div class="floating-action" title="Switch Multi-Timeframe View">
+      ⇄
+    </div>
+  </div>
+
+  <!-- Sub-Cards (Metrics Grid like CAD / USD in Screenshot) -->
+  <div class="metrics-grid">
+    <div class="sub-card">
+      <div class="sub-card-header">
+        <div class="sub-card-tag">
+          <div class="sub-card-icon" style="color: var(--green);">▲</div>
+          <span>Win Rate</span>
+        </div>
+        <span class="sub-card-id" id="tradeCounts">0 / 0</span>
+      </div>
+      <div class="sub-card-val" id="valWinRate">0.0%</div>
+      <div class="sub-card-footer" id="valExpectancy">Expectancy: +0.0R</div>
+    </div>
+
+    <div class="sub-card">
+      <div class="sub-card-header">
+        <div class="sub-card-tag">
+          <div class="sub-card-icon" style="color: var(--cyan-accent);">⚡</div>
+          <span>Profit Factor</span>
+        </div>
+        <span class="sub-card-id">RATIO</span>
+      </div>
+      <div class="sub-card-val" id="valProfitFactor">0.00</div>
+      <div class="sub-card-footer" id="valSharpe">Sharpe: 0.00</div>
+    </div>
+
+    <div class="sub-card">
+      <div class="sub-card-header">
+        <div class="sub-card-tag">
+          <div class="sub-card-icon" style="color: var(--red);">▼</div>
+          <span>Max Drawdown</span>
+        </div>
+        <span class="sub-card-id">PEAK TO VALLEY</span>
+      </div>
+      <div class="sub-card-val" style="color: var(--red);" id="valMaxDd">0.0%</div>
+      <div class="sub-card-footer" id="valMaxDdDays">Controlled Risk</div>
+    </div>
+
+    <div class="sub-card">
+      <div class="sub-card-header">
+        <div class="sub-card-tag">
+          <div class="sub-card-icon" style="color: #6366F1;">⏱</div>
+          <span>Avg Hold Time</span>
+        </div>
+        <span class="sub-card-id">INTRADAY</span>
+      </div>
+      <div class="sub-card-val" id="valAvgHold">0 m</div>
+      <div class="sub-card-footer">Dynamic Multi-R Trailing</div>
+    </div>
+  </div>
+
+  <!-- Charts Row (Pure Native SVG Charts) -->
+  <div class="grid-chart-2">
+    <!-- Main Native SVG Equity Curve -->
+    <div class="chart-card">
+      <div class="chart-card-title">Cumulative Growth Curve</div>
+      <div class="chart-card-desc">Chronological equity evolution ($)</div>
+      <div class="svg-container">
+        <svg id="svgEquityCurve" viewBox="0 0 600 240"></svg>
+      </div>
+    </div>
+
+    <!-- Native SVG Setup Distribution Donut -->
+    <div class="chart-card">
+      <div class="chart-card-title">Setup Breakdown</div>
+      <div class="chart-card-desc">Execution type distribution</div>
+      <div class="svg-container" style="display: flex; align-items: center; justify-content: center;">
+        <svg id="svgSetupDonut" viewBox="0 0 240 240" style="max-width: 220px;"></svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- Transactions Section (Matching Screenshot Bottom List) -->
+  <div class="transactions-card">
+    <div class="transactions-header">
+      <div class="transactions-title">Transactions (Trade Log)</div>
+      <div class="see-all-link" onclick="toggleFullLog()">See all</div>
+    </div>
+    <div id="tradesList">
+      <!-- Injected via JavaScript -->
+    </div>
+  </div>
+
+</div>
+
+<!-- Interactive Modal for Trade Details -->
+<div class="modal-overlay" id="auditModal" onclick="closeModal(event)">
+  <div class="modal-card" onclick="event.stopPropagation()">
+    <div class="transactions-header" style="margin-bottom: 20px;">
+      <h3 style="font-size: 18px; font-weight: 800;" id="modalTradeId">Trade Audit</h3>
+      <span style="cursor: pointer; font-size: 20px;" onclick="closeModal()">✕</span>
+    </div>
+    <div id="modalContent" style="font-size: 14px; line-height: 1.8;"></div>
+    <button class="btn-pill" style="width: 100%; margin-top: 20px;" onclick="closeModal()">Close</button>
+  </div>
+</div>
+
+<script>
+  // Dynamic Ingestion from dashboard/data.json with Fallback Sample Data
+  async function loadDashboard() {
+    let data;
+    try {
+      const response不易 = await fetch('data.json');
+      if (!response不易.ok) throw new Error();
+      data = await response不易.json();
+    } catch (e) {
+      console.log("Loading fallback demo data for preview...");
+      data = {
+        meta: { symbol: "MNQ / NQ=F", strategy_name: "1H-15M-5M-1M Trailing Engine" },
+        metrics: {
+          net_profit: 20568.72,
+          win_rate: 61.4,
+          total_trades: 88,
+          winning_trades: 54,
+          losing_trades: 34,
+          profit_factor: 2.45,
+          sharpe_ratio: 2.31,
+          max_drawdown_pct: 4.82,
+          expectancy_R: 0.92,
+          avg_holding_minutes: 38.5
+        },
+        timeseries: {
+          equity_curve: [10000, 10800, 10500, 11900, 12600, 13400, 14900, 16800, 18500, 20568.72]
+        },
+        distributions: {
+          setups: {
+            "LONG_BREAKOUT": { count: 36 },
+            "SHORT_BREAKOUT": { count: 28 },
+            "SHORT_AFTER_UPSWEEP": { count: 14 },
+            "LONG_AFTER_DOWNSWEEP": { count: 10 }
+          }
+        },
+        trades: [
+          { trade_id: "TR_0088", direction: "LONG", setup_type: "LONG_BREAKOUT", entry_time: "2026-08-30 14:35", entry_price: 18450.25, exit_price: 18520.00, r_multiple: 4.0, net_pnl: 697.50, exit_reason: "TRAILING_STOP_HIT" },
+          { trade_id: "TR_0087", direction: "SHORT", setup_type: "SHORT_AFTER_UPSWEEP", entry_time: "2026-08-30 11:20", entry_price: 18490.00, exit_price: 18445.00, r_multiple: 3.0, net_pnl: 450.00, exit_reason: "TRAILING_STOP_HIT" },
+          { trade_id: "TR_0086", direction: "LONG", setup_type: "LONG_BREAKOUT", entry_time: "2026-08-29 10:15", entry_price: 18320.00, exit_price: 18305.00, r_multiple: -1.0, net_pnl: -150.00, exit_reason: "INITIAL_STOP_HIT" },
+          { trade_id: "TR_0085", direction: "SHORT", setup_type: "SHORT_BREAKOUT", entry_time: "2026-08-28 13:40", entry_price: 18380.00, exit_price: 18260.00, r_multiple: 6.0, net_pnl: 1200.00, exit_reason: "TRAILING_STOP_HIT" }
+        ]
+      };
+    }
+
+    renderMetrics(data);
+    renderSvgEquity(data.timeseries ? data.timeseries.equity_curve : []);
+    renderSvgDonut(data.distributions ? data.distributions.setups : {});
+    renderTrades(data.trades || []);
+  }
+
+  function renderMetrics(data) {
+    const m不易 = data.metrics || {};
+    document.getElementById('heroNetPnl').innerText = `$${(m不易.net_profit || 0).toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+    document.getElementById('valWinRate').innerText = `${m不易.win_rate || 0}%`;
+    document.getElementById('tradeCounts').innerText = `${m不易.winning_trades || 0}W / ${m不易.losing_trades || 0}L`;
+    document.getElementById('valExpectancy').innerText = `Expectancy: +${m不易.expectancy_R || 0}R`;
+    document.getElementById('valProfitFactor').innerText = (m不易.profit_factor || 0).toFixed(2);
+    document.getElementById('valSharpe').innerText = `Sharpe: ${(m不易.sharpe_ratio || 0).toFixed(2)}`;
+    document.getElementById('valMaxDd').innerText = `-${m不易.max_drawdown_pct || 0}%`;
+    document.getElementById('valAvgHold').innerText = `${Math.round(m不易.avg_holding_minutes || 0)} mins`;
+  }
+
+  // Pure Native SVG Polyline Equity Curve
+  function renderSvgEquity(points) {
+    const svg = document.getElementById('svgEquityCurve');
+    if (!points || points.length < 2) return;
+
+    const w = 600, h = 240, pad = 20;
+    const minVal = Math.min(...points);
+    const maxVal不易 = Math.max(...points);
+    const range = maxVal不易 - minVal || 1;
+
+    const coords = points.map((val, idx) => {
+      const x = pad + (idx / (points.length - 1)) * (w - pad * 2);
+      const y = h - pad - ((val - minVal) / range) * (h - pad * 2);
+      return [x, y];
+    });
+
+    const ptsStr = coords.map(c => c.join(',')).join(' ');
+    const fillStr = `${ptsStr} ${w - pad},${h - pad} ${pad},${h - pad}`;
+
+    svg.innerHTML = `
+      <defs>
+        <linearGradient id="eqGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#0284C7" stop-opacity="0.18"/>
+          <stop offset="100%" stop-color="#0284C7" stop-opacity="0.0"/>
+        </linearGradient>
+      </defs>
+      <!-- Gridlines -->
+      <line x1="${pad}" y1="${pad}" x2="${w-pad}" y2="${pad}" stroke="#F1F5F9" stroke-width="1"/>
+      <line x1="${pad}" y1="${h/2}" x2="${w-pad}" y2="${h/2}" stroke="#F1F5F9" stroke-width="1"/>
+      <line x1="${pad}" y1="${h-pad}" x2="${w-pad}" y2="${h-pad}" stroke="#E2E8F0" stroke-width="1"/>
+      <!-- Area Fill -->
+      <polygon points="${fillStr}" fill="url(#eqGrad)"/>
+      <!-- Main Line -->
+      <polyline points="${ptsStr}" fill="none" stroke="#0284C7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      <!-- Endpoint Dot -->
+      <circle cx="${coords[coords.length-1][0]}" cy="${coords[coords.length-1][1]}" r="5" fill="#0284C7" stroke="#FFFFFF" stroke-width="2"/>
+    `;
+  }
+
+  // Pure Native SVG Donut Chart
+  function renderSvgDonut(setups) {
+    const svg = document.getElementById('svgSetupDonut');
+    const entries = Object.entries(setups || {});
+    const total = entries.reduce((acc, [, v]) => acc + (v.count || 0), 0) || 1;
+
+    let cumulative = 0;
+    const colors = ['#0284C7', '#0F172A', '#10B981', '#F43F5E'];
+    const r = 70, cx不易 = 120, cy不易 = 120;
+
+    let paths = '';
+    entries.forEach(([key, val], idx) => {
+      const frac = (val.count || 0) / total;
+      const startAngle = cumulative * 2 * Math.PI;
+      cumulative += frac;
+      const endAngle = cumulative * 2 * Math.PI;
+
+      const x1 = cx不易 + r * Math.sin(startAngle);
+      const y1不易 = cy不易 - r * Math.cos(startAngle);
+      const x2 = cx不易 + r * Math.sin(endAngle);
+      const y2不易 = cy不易 - r * Math.cos(endAngle);
+
+      const largeArc = frac > 0.5 ? 1 : 0;
+      const col = colors[idx % colors.length];
+
+      paths += `<path d="M ${x1} ${y1不易} A ${r} ${r} 0 ${largeArc} 1 ${x2} ${y2不易}" fill="none" stroke="${col}" stroke-width="26"/>`;
+    });
+
+    svg.innerHTML = `
+      ${paths}
+      <text x="${cx不易}" y="${cy不易 + 5}" text-anchor="middle" font-size="20" font-weight="800" fill="#0F172A">${total}</text>
+      <text x="${cx不易}" y="${cy不易 + 22}" text-anchor="middle" font-size="11" font-weight="700" fill="#94A3B8">SETUPS</text>
+    `;
+  }
+
+  // Render Transaction List (Matching Screenshot items)
+  let allTrades = [];
+  function renderTrades(trades) {
+    allTrades = trades;
+    const container = document.getElementById('tradesList');
+    container.innerHTML = trades.slice(0, 10).map(t => {
+      const isWin = (t.net_pnl || 0) >= 0;
+      const isLong = (t.direction || "LONG") === "LONG";
+      return `
+        <div class="trade-row" onclick="openModal('${t.trade_id}')">
+          <div class="trade-left">
+            <div class="trade-icon ${isLong ? 'long' : 'short'}">
+              ${isLong ? '↗' : '↘'}
+            </div>
+            <div>
+              <div class="trade-info-title">${t.setup_type || t.direction}</div>
+              <div class="trade-info-sub">${(t.entry_time || '').substring(5, 16)} · Entry: $${t.entry_price || 0}</div>
+            </div>
+          </div>
+          <div class="trade-right">
+            <div class="trade-pnl ${isWin ? 'win' : 'loss'}">
+              ${isWin ? '+' : ''}$${(t.net_pnl || 0).toFixed(2)}
+            </div>
+            <div class="trade-r">${(t.r_multiple || 0) >= 0 ? '+' : ''}${t.r_multiple || 0}R</div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function openModal(tradeId) {
+    const t = allTrades.find(x => x.trade_id === tradeId);
+    if (!t) return;
+    document.getElementById('modalTradeId').innerText = `Trade Audit: ${t.trade_id}`;
+    document.getElementById('modalContent').innerHTML = `
+      <p><strong>Direction:</strong> ${t.direction}</p>
+      <p><strong>Setup Type:</strong> ${t.setup_type}</p>
+      <p><strong>Entry:</strong> $${t.entry_price} (${t.entry_time})</p>
+      <p><strong>Exit:</strong> $${t.exit_price || '-'} (${t.exit_time || '-'})</p>
+      <p><strong>Realized R:</strong> ${t.r_multiple}R</p>
+      <p><strong>Net P&L:</strong> $${t.net_pnl}</p>
+      <p><strong>Exit Reason:</strong> ${t.exit_reason}</p>
+    `;
+    document.getElementById('auditModal').style.display = 'flex';
+  }
+
+  function closeModal(e) {
+    document.getElementById('auditModal').style.display = 'none';
+  }
+
+  function toggleFullLog() {
+    renderTrades(allTrades);
+  }
+
+  window.addEventListener('DOMContentLoaded', loadDashboard);
+</script>
+</body>
+</html>
