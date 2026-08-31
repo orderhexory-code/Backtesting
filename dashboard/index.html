@@ -46,9 +46,9 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* Minimalist Left Sidebar */
+    /* Minimal Left Sidebar */
     .sidebar {
-      width: 240px;
+      width: 250px;
       background: var(--sidebar-bg);
       border-right: 1px solid var(--border);
       padding: 28px 18px;
@@ -67,7 +67,7 @@
       padding: 0 8px;
     }
     .brand-avatar {
-      width: 36px; height: 36px; border-radius: 10px;
+      width: 38px; height: 38px; border-radius: 10px;
       background: #0F172A; color: #FFF;
       display: flex; align-items: center; justify-content: center;
       font-weight: 800; font-size: 14px;
@@ -101,7 +101,7 @@
 
     /* Main Content Wrapper */
     .main-wrapper {
-      margin-left: 240px;
+      margin-left: 250px;
       flex: 1;
       padding: 28px 24px;
       max-width: 1400px;
@@ -121,7 +121,7 @@
     .page-section { display: none; }
     .page-section.active { display: block; }
 
-    /* Hero & Cards */
+    /* Hero Card */
     .hero-card {
       background: var(--card);
       border-radius: var(--radius-lg);
@@ -147,11 +147,14 @@
     .capital-subline strong { color: var(--text); }
 
     .btn-pill {
-      background: var(--btn-black); color: #FFFFFF; border: none; padding: 12px 20px;
-      border-radius: var(--radius-pill); font-size: 14px; font-weight: 700; font-family: inherit;
+      background: var(--btn-black); color: #FFFFFF; border: none; padding: 10px 18px;
+      border-radius: var(--radius-pill); font-size: 13px; font-weight: 700; font-family: inherit;
       cursor: pointer; display: inline-flex; align-items: center; gap: 6px; text-decoration: none; transition: all 0.15s;
     }
     .btn-pill:hover { background: var(--btn-black-hover); transform: translateY(-1px); }
+    .btn-pill.sm { padding: 6px 12px; font-size: 11px; }
+    .btn-pill.sec { background: var(--card-sub); color: var(--text); border: 1px solid var(--border); }
+    .btn-pill.sec:hover { background: #E2E8F0; }
 
     /* KPI Grid */
     .kpi-grid {
@@ -167,15 +170,65 @@
     .kpi-val { font-size: 22px; font-weight: 800; font-family: 'JetBrains Mono', monospace; }
     .kpi-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; font-weight: 600; }
 
+    /* Calendar & Charts */
+    .calendar-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 24px; box-shadow: var(--shadow); margin-bottom: 20px;
+    }
+    .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; }
+    .cal-weekday { text-align: center; font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; padding-bottom: 8px; }
+    .cal-day {
+      background: var(--card-sub); border: 1px solid var(--border); border-radius: var(--radius-md);
+      min-height: 84px; padding: 8px 10px; display: flex; flex-direction: column; justify-content: space-between;
+      cursor: pointer; transition: transform 0.1s;
+    }
+    .cal-day:hover { transform: scale(1.02); }
+    .cal-day.empty { background: transparent; border-color: transparent; cursor: default; }
+    .cal-day.profit { background: var(--green-bg); border-color: #A7F3D0; }
+    .cal-day.loss { background: var(--red-bg); border-color: #FECACA; }
+    .cal-day-num { font-size: 12px; font-weight: 700; color: var(--text-muted); }
+    .cal-day-pnl { font-size: 14px; font-weight: 800; font-family: 'JetBrains Mono', monospace; }
+    .cal-day.profit .cal-day-pnl { color: var(--green-text); }
+    .cal-day.loss .cal-day-pnl { color: var(--red-text); }
+    .cal-day-trades { font-size: 10px; font-weight: 700; color: var(--text-muted); }
+
+    .grid-2col { display: grid; grid-template-columns: repeat(auto-fit, minmax(440px, 1fr)); gap: 18px; margin-bottom: 20px; }
+    .chart-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 22px; box-shadow: var(--shadow-sm);
+      position: relative;
+    }
+    .chart-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+    .chart-title { font-size: 15px; font-weight: 800; }
+    .chart-sub { font-size: 12px; color: var(--text-muted); }
+    .svg-box { width: 100%; height: 240px; position: relative; }
+    svg { width: 100%; height: 100%; overflow: visible; }
+
+    /* Interactive Floating Tooltip */
+    #chartTooltip {
+      position: fixed;
+      display: none;
+      background: rgba(15, 23, 42, 0.92);
+      color: #FFFFFF;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      pointer-events: none;
+      z-index: 1000;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+      border: 1px solid rgba(255,255,255,0.1);
+      line-height: 1.5;
+    }
+
     /* Simulator Panel */
     .simulator-card {
       background: var(--card); border: 1px solid var(--border);
       border-radius: var(--radius-lg); padding: 28px; box-shadow: var(--shadow);
-      margin-bottom: 20px;
     }
     .sim-controls {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 24px; margin: 24px 0;
     }
     .control-box {
@@ -189,36 +242,21 @@
     }
     .control-slider { width: 100%; margin-top: 12px; accent-color: #0F172A; cursor: pointer; }
 
-    /* Calendar & Charts */
-    .calendar-card {
+    /* Guide Page Styling */
+    .guide-card {
       background: var(--card); border: 1px solid var(--border);
-      border-radius: var(--radius-lg); padding: 24px; box-shadow: var(--shadow); margin-bottom: 20px;
+      border-radius: var(--radius-lg); padding: 28px; box-shadow: var(--shadow);
+      margin-bottom: 24px;
     }
-    .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-    .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; }
-    .cal-weekday { text-align: center; font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; padding-bottom: 8px; }
-    .cal-day {
-      background: var(--card-sub); border: 1px solid var(--border); border-radius: var(--radius-md);
-      min-height: 84px; padding: 8px 10px; display: flex; flex-direction: column; justify-content: space-between;
+    .rule-pill {
+      background: var(--blue-bg); color: var(--blue);
+      font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: var(--radius-pill);
+      display: inline-block; margin-bottom: 8px;
     }
-    .cal-day.empty { background: transparent; border-color: transparent; }
-    .cal-day.profit { background: var(--green-bg); border-color: #A7F3D0; }
-    .cal-day.loss { background: var(--red-bg); border-color: #FECACA; }
-    .cal-day-num { font-size: 12px; font-weight: 700; color: var(--text-muted); }
-    .cal-day-pnl { font-size: 14px; font-weight: 800; font-family: 'JetBrains Mono', monospace; }
-    .cal-day.profit .cal-day-pnl { color: var(--green-text); }
-    .cal-day.loss .cal-day-pnl { color: var(--red-text); }
-    .cal-day-trades { font-size: 10px; font-weight: 700; color: var(--text-muted); }
-
-    .grid-2col { display: grid; grid-template-columns: repeat(auto-fit, minmax(440px, 1fr)); gap: 18px; margin-bottom: 20px; }
-    .chart-card {
-      background: var(--card); border: 1px solid var(--border);
-      border-radius: var(--radius-lg); padding: 22px; box-shadow: var(--shadow-sm);
+    .candle-diagram-box {
+      background: #0D1117; border-radius: var(--radius-md); padding: 20px;
+      margin: 16px 0; display: flex; justify-content: center;
     }
-    .chart-title { font-size: 15px; font-weight: 800; }
-    .chart-sub { font-size: 12px; color: var(--text-muted); margin-bottom: 16px; }
-    .svg-box { width: 100%; height: 240px; }
-    svg { width: 100%; height: 100%; overflow: visible; }
 
     /* Table */
     .ledger-card {
@@ -234,9 +272,23 @@
     .badge.short { background: var(--red-bg); color: var(--red-text); }
     .badge.win { background: var(--green-bg); color: var(--green-text); }
     .badge.loss { background: var(--red-bg); color: var(--red-text); }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(15, 23, 42, 0.5);
+      backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center;
+      padding: 16px; z-index: 2000;
+    }
+    .modal-card {
+      background: #FFFFFF; border-radius: var(--radius-lg); max-width: 480px; width: 100%; padding: 24px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    }
   </style>
 </head>
 <body>
+
+  <!-- Floating Global Tooltip -->
+  <div id="chartTooltip"></div>
 
   <!-- Left Sidebar Navigation -->
   <aside class="sidebar">
@@ -245,7 +297,7 @@
         <div class="brand-avatar">NQ</div>
         <div>
           <div class="brand-title">NASDAQ Hub</div>
-          <div class="brand-sub">1H-15M-5M-1M Engine</div>
+          <div class="brand-sub">Multi-Timeframe Engine</div>
         </div>
       </div>
       <ul class="nav-list">
@@ -255,32 +307,35 @@
         <li class="nav-item" onclick="switchTab('simulator', this)">
           <span class="nav-icon">⚡</span> Capital Simulator
         </li>
+        <li class="nav-item" onclick="switchTab('guide', this)">
+          <span class="nav-icon">📖</span> Strategy Guide
+        </li>
       </ul>
     </div>
     <div class="sidebar-footer">
       America/New_York (EST)<br>
-      Dynamic Compounding Active
+      Dynamic % Sizing Active
     </div>
   </aside>
 
-  <!-- Main Content Area -->
+  <!-- Main Content -->
   <main class="main-wrapper">
 
-    <!-- PAGE 1: OVERVIEW -->
+    <!-- TAB 1: OVERVIEW -->
     <section id="tab-overview" class="page-section active">
       <div class="hero-card">
         <div>
           <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
-            <span class="hero-tag">NASDAQ Futures · Performance Overview</span>
+            <span class="hero-tag">NASDAQ Futures · Overview</span>
             <span class="tz-badge">EST/EDT Time</span>
           </div>
           <div class="hero-balance-wrap">
             <div class="hero-balance" id="heroCurrentEquity">$10,000.00</div>
-            <div class="hero-currency">USD Balance</div>
+            <div class="hero-currency">USD Account Balance</div>
             <div class="profit-pill" id="heroProfitPill">+$0.00 (+0.00%)</div>
           </div>
           <div class="capital-subline">
-            Starting Capital: <strong id="heroStartingFund">$10,000.00</strong> · Net Realized: <strong id="heroNetPnl">$0.00</strong>
+            Starting Capital: <strong id="heroStartingFund">$10,000.00</strong> · Realized Net PnL: <strong id="heroNetPnl">$0.00</strong>
           </div>
         </div>
         <div>
@@ -322,51 +377,91 @@
         <div class="cal-header">
           <div style="font-size:18px; font-weight:800;">P&L Calendar (New York Time)</div>
           <div style="display:flex; align-items:center; gap:8px;">
-            <button onclick="changeMonth(-1)" class="btn-pill" style="padding:6px 12px; font-size:12px;">‹ Prev</button>
+            <button onclick="changeMonth(-1)" class="btn-pill sec sm">‹ Prev</button>
             <span id="calMonthDisplay" style="font-weight:700; min-width:130px; text-align:center;">Month</span>
-            <button onclick="changeMonth(1)" class="btn-pill" style="padding:6px 12px; font-size:12px;">Next ›</button>
+            <button onclick="changeMonth(1)" class="btn-pill sec sm">Next ›</button>
           </div>
         </div>
         <div class="cal-grid" id="calGrid"></div>
       </div>
 
-      <!-- 6 Charts -->
+      <!-- 6 Interactive Visual Charts with Tooltips & Zoom Controls -->
       <div class="grid-2col">
+        <!-- Chart 1: Equity Curve -->
         <div class="chart-card">
-          <div class="chart-title">1. Equity Curve & Capital Growth</div>
-          <div class="chart-sub">Account balance evolution ($)</div>
+          <div class="chart-header-row">
+            <div>
+              <div class="chart-title">1. Equity Curve & Capital Growth</div>
+              <div class="chart-sub">Hover to inspect balance ($)</div>
+            </div>
+          </div>
           <div class="svg-box"><svg id="svgEquity" viewBox="0 0 500 240"></svg></div>
         </div>
+
+        <!-- Chart 2: Trade-by-Trade Performance with Zoom Controls -->
         <div class="chart-card">
-          <div class="chart-title">2. Trade-by-Trade Performance</div>
-          <div class="chart-sub">Sequential R-Multiples</div>
+          <div class="chart-header-row">
+            <div>
+              <div class="chart-title">2. Trade-by-Trade Performance</div>
+              <div class="chart-sub">Sequential R-Multiples</div>
+            </div>
+            <div style="display:flex; gap:6px;">
+              <button class="btn-pill sec sm" onclick="setTradeBarsZoom(30, this)">Last 30</button>
+              <button class="btn-pill sec sm" onclick="setTradeBarsZoom(60, this)">Last 60</button>
+              <button class="btn-pill sec sm" onclick="setTradeBarsZoom(0, this)">All</button>
+            </div>
+          </div>
           <div class="svg-box"><svg id="svgTradeBars" viewBox="0 0 500 240"></svg></div>
         </div>
+
+        <!-- Chart 3: Outcome Distribution -->
         <div class="chart-card">
-          <div class="chart-title">3. Outcome Distribution</div>
-          <div class="chart-sub">Win vs Loss vs C2C</div>
+          <div class="chart-header-row">
+            <div>
+              <div class="chart-title">3. Outcome Distribution</div>
+              <div class="chart-sub">Win % vs Loss % vs C2C %</div>
+            </div>
+          </div>
           <div class="svg-box" style="display:flex; justify-content:center;"><svg id="svgOutcomeDonut" viewBox="0 0 240 240" style="max-width:220px;"></svg></div>
         </div>
+
+        <!-- Chart 4: Exit Reason Breakdown -->
         <div class="chart-card">
-          <div class="chart-title">4. Exit Reason Breakdown</div>
-          <div class="chart-sub">Audit trail triggers</div>
+          <div class="chart-header-row">
+            <div>
+              <div class="chart-title">4. Exit Reason Breakdown</div>
+              <div class="chart-sub">Audit trail triggers</div>
+            </div>
+          </div>
           <div class="svg-box" style="display:flex; justify-content:center;"><svg id="svgExitDonut" viewBox="0 0 240 240" style="max-width:220px;"></svg></div>
         </div>
+
+        <!-- Chart 5: Long vs Short Performance -->
         <div class="chart-card">
-          <div class="chart-title">5. Long vs Short Performance</div>
-          <div class="chart-sub">Buy vs Sell Net P&L comparison ($)</div>
+          <div class="chart-header-row">
+            <div>
+              <div class="chart-title">5. Long vs Short Performance</div>
+              <div class="chart-sub">Buy vs Sell Net P&L comparison ($)</div>
+            </div>
+          </div>
           <div class="svg-box"><svg id="svgLongShort" viewBox="0 0 500 240"></svg></div>
         </div>
+
+        <!-- Chart 6: Hour-of-Day P&L Analysis -->
         <div class="chart-card">
-          <div class="chart-title">6. Hour-of-Day P&L Analysis</div>
-          <div class="chart-sub">24-Hour session performance (EST)</div>
+          <div class="chart-header-row">
+            <div>
+              <div class="chart-title">6. Hour-of-Day P&L Analysis</div>
+              <div class="chart-sub">24-Hour session performance (EST)</div>
+            </div>
+          </div>
           <div class="svg-box"><svg id="svgHourly" viewBox="0 0 500 240"></svg></div>
         </div>
       </div>
 
       <!-- Trade Ledger -->
       <div class="ledger-card">
-        <div style="font-size:18px; font-weight:800; margin-bottom:16px;">Trade Ledger</div>
+        <div style="font-size:18px; font-weight:800; margin-bottom:16px;">Trade Ledger (Click row to Audit)</div>
         <table>
           <thead>
             <tr>
@@ -386,14 +481,13 @@
       </div>
     </section>
 
-    <!-- PAGE 2: CAPITAL SIMULATOR (WHAT-IF SIZING ENGINE) -->
+    <!-- TAB 2: CAPITAL SIMULATOR -->
     <section id="tab-simulator" class="page-section">
       <div class="simulator-card">
         <div style="font-size:22px; font-weight:800; margin-bottom:6px;">⚡ Dynamic Capital Simulator & Risk Sizer</div>
         <div style="font-size:13px; color:var(--text-muted);">Adjust starting capital and risk % to recalculate the entire backtest in real-time.</div>
 
         <div class="sim-controls">
-          <!-- Starting Fund Control -->
           <div class="control-box">
             <div class="control-label">
               <span>Starting Fund ($ USD)</span>
@@ -403,7 +497,6 @@
             <input type="range" id="simFundSlider" class="control-slider" min="1000" max="250000" step="1000" value="10000" oninput="syncFund(this.value)">
           </div>
 
-          <!-- Risk % Control -->
           <div class="control-box">
             <div class="control-label">
               <span>Risk Per Trade (% of Balance)</span>
@@ -415,13 +508,131 @@
         </div>
 
         <div style="display:flex; gap:12px; flex-wrap:wrap;">
-          <button class="btn-pill" onclick="recalculateSimulation()">⚡ Apply & Recalculate A-to-Z Metrics</button>
-          <button class="btn-pill" style="background:var(--card-sub); color:var(--text);" onclick="resetSimulation()">↺ Reset to Defaults</button>
+          <button class="btn-pill" onclick="recalculateSimulation(); switchTab('overview', document.querySelector('.nav-item'))">⚡ Apply & View Overview</button>
+          <button class="btn-pill sec" onclick="resetSimulation()">↺ Reset to Defaults</button>
         </div>
       </div>
     </section>
 
+    <!-- TAB 3: STRATEGY RULES & VISUAL CANDLE SETUPS -->
+    <section id="tab-guide" class="page-section">
+      <div class="guide-card">
+        <div class="rule-pill">STRATEGY HIERARCHY</div>
+        <h2 style="font-size: 22px; font-weight: 800; margin-bottom: 8px;">1H Reference → 15M Intent → 5M Confirmation → 1M Entry → Trailing SL</h2>
+        <p style="color: var(--text-muted); font-size: 14px; line-height: 1.6;">
+          Engine multi-timeframe rules ko follow karta hai. 5M sweeps ko independent reversal nahi mana jata, aur profits book karne ke badle <strong>Dynamic Multi-R Trailing Stop</strong> se trade ko maximize kiya jata hai.
+        </p>
+
+        <!-- Visual Setup 1: 15M Bullish Breakout -->
+        <div style="margin-top: 32px;">
+          <h3 style="font-size: 16px; font-weight: 800; color: var(--green-text);">1. Setup A: 15M Bullish Breakout (LONG)</h3>
+          <p style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">
+            1H candle complete hone ke baad, agla 15M candle 1H High ke upar break & close hota hai. 5M confirmation ke baad 1M bar open par Long entry hoti hai.
+          </p>
+          <div class="candle-diagram-box">
+            <svg viewBox="0 0 540 200" style="width:100%; max-width:540px; height:180px;">
+              <!-- 1H High Reference Line -->
+              <line x1="20" y1="100" x2="520" y2="100" stroke="#00E5FF" stroke-width="1.5" stroke-dasharray="4,4"/>
+              <text x="30" y="92" fill="#00E5FF" font-size="11" font-weight="700">1H REFERENCE HIGH (18,050)</text>
+
+              <!-- 1H Candle (Neutral Grey) -->
+              <line x1="80" y1="95" x2="80" y2="175" stroke="#64748B" stroke-width="2"/>
+              <rect x="70" y="110" width="20" height="50" fill="#64748B"/>
+              <text x="80" y="190" fill="#94A3B8" font-size="10" text-anchor="middle">Completed 1H</text>
+
+              <!-- 15M Breakout Candle (Green) -->
+              <line x1="180" y1="70" x2="180" y2="140" stroke="#10B981" stroke-width="2"/>
+              <rect x="170" y="80" width="20" height="50" fill="#10B981"/>
+              <text x="180" y="60" fill="#10B981" font-size="10" font-weight="700" text-anchor="middle">15M Close > 1H High</text>
+
+              <!-- 5M Confirmation Candle -->
+              <line x1="280" y1="65" x2="280" y2="115" stroke="#10B981" stroke-width="2"/>
+              <rect x="270" y="70" width="20" height="35" fill="#10B981"/>
+              <text x="280" y="55" fill="#10B981" font-size="10" font-weight="700" text-anchor="middle">5M Confirmed</text>
+
+              <!-- 1M Entry Candle & SL -->
+              <line x1="380" y1="60" x2="380" y2="110" stroke="#38BDF8" stroke-width="2"/>
+              <rect x="372" y="68" width="16" height="30" fill="#38BDF8"/>
+              <circle cx="380" cy="68" r="4" fill="#38BDF8"/>
+              <text x="390" y="66" fill="#38BDF8" font-size="11" font-weight="800">BUY Entry (Next Open)</text>
+
+              <!-- Stop Loss Line -->
+              <line x1="360" y1="125" x2="440" y2="125" stroke="#EF4444" stroke-width="2"/>
+              <text x="445" y="129" fill="#EF4444" font-size="10" font-weight="700">Initial SL (Structure Low)</text>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Visual Setup 2: 15M Upside Sweep Reversal -->
+        <div style="margin-top: 32px;">
+          <h3 style="font-size: 16px; font-weight: 800; color: var(--red-text);">2. Setup B: 15M Upside Sweep Reversal (SHORT)</h3>
+          <p style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">
+            15M candle 1H High ko wick se sweep karta hai lekin 1H High ke **niche close** hota hai (Liquidity Grab). Downside confirmation par Short entry hoti hai.
+          </p>
+          <div class="candle-diagram-box">
+            <svg viewBox="0 0 540 200" style="width:100%; max-width:540px; height:180px;">
+              <!-- 1H High Reference Line -->
+              <line x1="20" y1="80" x2="520" y2="80" stroke="#00E5FF" stroke-width="1.5" stroke-dasharray="4,4"/>
+              <text x="30" y="72" fill="#00E5FF" font-size="11" font-weight="700">1H REFERENCE HIGH</text>
+
+              <!-- 15M Sweep Candle (Red body, Long Upper Wick) -->
+              <line x1="160" y1="40" x2="160" y2="130" stroke="#EF4444" stroke-width="2"/>
+              <rect x="150" y="85" width="20" height="40" fill="#EF4444"/>
+              <text x="160" y="32" fill="#F59E0B" font-size="10" font-weight="700" text-anchor="middle">Sweep Wick > 1H High</text>
+              <text x="160" y="145" fill="#EF4444" font-size="10" text-anchor="middle">Close <= 1H High</text>
+
+              <!-- 5M Breakdown Confirmation -->
+              <line x1="270" y1="95" x2="270" y2="155" stroke="#EF4444" stroke-width="2"/>
+              <rect x="260" y="105" width="20" height="45" fill="#EF4444"/>
+              <text x="270" y="172" fill="#EF4444" font-size="10" font-weight="700" text-anchor="middle">5M Confirm Breakdown</text>
+
+              <!-- 1M Short Entry -->
+              <line x1="380" y1="120" x2="380" y2="170" stroke="#F43F5E" stroke-width="2"/>
+              <rect x="372" y="125" width="16" height="35" fill="#F43F5E"/>
+              <circle cx="380" cy="125" r="4" fill="#F43F5E"/>
+              <text x="390" y="123" fill="#F43F5E" font-size="11" font-weight="800">SELL Entry</text>
+
+              <!-- Stop Loss Line -->
+              <line x1="360" y1="70" x2="440" y2="70" stroke="#EF4444" stroke-width="2"/>
+              <text x="445" y="74" fill="#EF4444" font-size="10" font-weight="700">SL (Sweep High)</text>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Dynamic Trailing Ladder -->
+        <div style="margin-top: 32px;">
+          <h3 style="font-size: 16px; font-weight: 800;">3. Dynamic Multi-R Trailing Ladder</h3>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-top: 12px;">
+            <div style="background:var(--card-sub); padding:16px; border-radius:var(--radius-md); border:1px solid var(--border);">
+              <div style="font-weight:800; font-size:14px; color:var(--blue);">Level 1: At +1R</div>
+              <div style="font-size:12px; color:var(--text-muted); margin-top:4px;">SL moved to <strong>+1R in Profit</strong>. 100% position remains open. Zero partial exit.</div>
+            </div>
+            <div style="background:var(--card-sub); padding:16px; border-radius:var(--radius-md); border:1px solid var(--border);">
+              <div style="font-weight:800; font-size:14px; color:var(--green);">Level 2: At +3R</div>
+              <div style="font-size:12px; color:var(--text-muted); margin-top:4px;">SL moved to <strong>+3R in Profit</strong>. Captures explosive trend legs.</div>
+            </div>
+            <div style="background:var(--card-sub); padding:16px; border-radius:var(--radius-md); border:1px solid var(--border);">
+              <div style="font-weight:800; font-size:14px; color:#6366F1;">Level 3: Post +3R</div>
+              <div style="font-size:12px; color:var(--text-muted); margin-top:4px;">Every +1R advancement trails the SL by +1R (+4R, +5R, +6R...) until stopped out.</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
   </main>
+
+  <!-- Trade Audit Modal -->
+  <div class="modal-overlay" id="auditModal" onclick="closeModal(event)">
+    <div class="modal-card" onclick="event.stopPropagation()">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+        <h3 style="font-size:16px; font-weight:800;" id="modalId">Trade Audit</h3>
+        <span style="cursor:pointer; font-weight:700;" onclick="closeModal()">✕</span>
+      </div>
+      <div id="modalBody" style="font-size:13px; line-height:1.8; color:var(--text);"></div>
+    </div>
+  </div>
 
 <script>
   let rawData = null;
@@ -430,6 +641,22 @@
   let simTrades = [];
   let simStartingFund = 10000;
   let simRiskPercent = 1.0;
+  let tradeBarsZoomLimit = 30; // default view 30 trades
+
+  const tooltip = document.getElementById('chartTooltip');
+  function showTooltip(e, text) {
+    tooltip.innerHTML = text;
+    tooltip.style.display = 'block';
+    tooltip.style.left = (e.clientX + 12) + 'px';
+    tooltip.style.top = (e.clientY + 12) + 'px';
+  }
+  function moveTooltip(e) {
+    tooltip.style.left = (e.clientX + 12) + 'px';
+    tooltip.style.top = (e.clientY + 12) + 'px';
+  }
+  function hideTooltip() {
+    tooltip.style.display = 'none';
+  }
 
   function toNYDateObj(dateStr) {
     if (!dateStr) return null;
@@ -467,7 +694,7 @@
     document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
     document.getElementById(`tab-${tabId}`).classList.add('active');
-    el.classList.add('active');
+    if (el) el.classList.add('active');
   }
 
   function syncFund(val) {
@@ -485,7 +712,6 @@
     document.getElementById('simRiskLabel').innerText = `${r.toFixed(2)}%`;
   }
 
-  // --- Real-Time What-If Recalculation Engine ---
   function recalculateSimulation() {
     simStartingFund = parseFloat(document.getElementById('simFundInput').value) || 10000;
     simRiskPercent = parseFloat(document.getElementById('simRiskInput').value) || 1.0;
@@ -494,25 +720,24 @@
     let peakEquity = runningEquity;
     let maxDdDollars = 0;
     let maxDdPct = 0;
-    const equityCurve = [runningEquity];
-    const pointValue = 2.0; // MNQ point value
+    const equityCurve = [{ eq: runningEquity, time: 'Start', pnl: 0 }];
+    const pointValue = 2.0;
 
     simTrades = baseTrades.map(t => {
       const clone = { ...t };
       const riskPoints = clone.initial_risk || (Math.abs(clone.entry_price - (clone.initial_sl || clone.entry_price - 10))) || 10;
       
-      // Dynamic Lots Formula based on Account Balance %
       const riskMoney = runningEquity * (simRiskPercent / 100.0);
       const riskPerContract = riskPoints * pointValue;
       const contracts = Math.max(1, Math.floor(riskMoney / (riskPerContract || 20)));
       clone.contracts = contracts;
 
       const pnlPoints = (clone.r_multiple || 0) * riskPoints;
-      const netPnl = pnlPoints * pointValue * contracts - (1.24 * contracts); // slippage + comm
+      const netPnl = pnlPoints * pointValue * contracts - (1.24 * contracts);
       clone.net_pnl = Math.round(netPnl * 100) / 100;
 
       runningEquity += clone.net_pnl;
-      equityCurve.push(runningEquity);
+      equityCurve.push({ eq: runningEquity, time: clone.exit_time || clone.entry_time, pnl: clone.net_pnl });
 
       if (runningEquity > peakEquity) peakEquity = runningEquity;
       const dd = peakEquity - runningEquity;
@@ -529,7 +754,6 @@
     const losses = simTrades.filter(t => t.net_pnl <= 0).length;
     const winRate = simTrades.length ? ((wins / simTrades.length) * 100).toFixed(1) : 0;
 
-    // Update UI
     document.getElementById('heroStartingFund').innerText = `$${simStartingFund.toLocaleString('en-US', {minimumFractionDigits:2})} USD`;
     document.getElementById('heroCurrentEquity').innerText = `$${runningEquity.toLocaleString('en-US', {minimumFractionDigits:2})}`;
     document.getElementById('heroNetPnl').innerText = `${netProfit >= 0 ? '+' : ''}$${netProfit.toLocaleString('en-US', {minimumFractionDigits:2})}`;
@@ -563,7 +787,14 @@
     recalculateSimulation();
   }
 
-  // --- Calendar & Charts Renderers ---
+  function setTradeBarsZoom(limit, btn) {
+    tradeBarsZoomLimit = limit;
+    document.querySelectorAll('.chart-card button').forEach(b => b.classList.add('sec'));
+    if (btn) btn.classList.remove('sec');
+    renderTradeBarsChart(simTrades);
+  }
+
+  // --- Calendar with Day Click Tooltips ---
   function renderCalendar(trades) {
     const grid = document.getElementById('calGrid');
     const year = currentCalDate.getFullYear();
@@ -576,9 +807,10 @@
       const nyDate = toNYDateObj(t.exit_time || t.entry_time);
       if (!nyDate) return;
       const dStr = nyDate.dateKey;
-      if (!dayMap[dStr]) dayMap[dStr] = { pnl: 0, trades: 0 };
+      if (!dayMap[dStr]) dayMap[dStr] = { pnl: 0, trades: 0, winCount: 0 };
       dayMap[dStr].pnl += (t.net_pnl || 0);
       dayMap[dStr].trades += 1;
+      if (t.net_pnl > 0) dayMap[dStr].winCount += 1;
     });
 
     const firstDayIndex = new Date(year, month, 1).getDay();
@@ -592,8 +824,9 @@
       const dayData = dayMap[dateKey];
       if (dayData) {
         const cls = dayData.pnl > 0 ? 'profit' : (dayData.pnl < 0 ? 'loss' : '');
+        const tipStr = `${dateKey}<br>Net PnL: $${Math.round(dayData.pnl)}<br>Trades: ${dayData.trades} (${dayData.winCount} Wins)`;
         html += `
-          <div class="cal-day ${cls}">
+          <div class="cal-day ${cls}" onmousemove="showTooltip(event, '${tipStr}')" onmouseleave="hideTooltip()">
             <div class="cal-day-num">${day}</div>
             <div class="cal-day-pnl">${dayData.pnl > 0 ? '+' : ''}$${Math.round(dayData.pnl)}</div>
             <div class="cal-day-trades">${dayData.trades} trade${dayData.trades > 1 ? 's' : ''}</div>
@@ -609,14 +842,29 @@
     renderCalendar(simTrades);
   }
 
+  // --- Interactive Equity Curve with Cursor Tooltips ---
   function renderEquityChart(points) {
     const svg = document.getElementById('svgEquity');
     if (!points || points.length < 2) return;
     const w = 500, h = 240, p = 24;
-    const min = Math.min(...points), max = Math.max(...points);
+    const eqVals = points.map(x => x.eq);
+    const min = Math.min(...eqVals), max = Math.max(...eqVals);
     const range = max - min || 1;
-    const coords = points.map((v, i) => [p + (i / (points.length - 1)) * (w - p * 2), h - p - ((v - min) / range) * (h - p * 2)]);
-    const ptsStr = coords.map(c => c.join(',')).join(' ');
+
+    const coords = points.map((pt, i) => {
+      const x = p + (i / (points.length - 1)) * (w - p * 2);
+      const y = h - p - ((pt.eq - min) / range) * (h - p * 2);
+      return { x, y, pt, i };
+    });
+
+    const ptsStr = coords.map(c => `${c.x},${c.y}`).join(' ');
+    let dotsHtml = '';
+    coords.forEach((c, idx) => {
+      if (coords.length > 80 && idx % Math.ceil(coords.length / 50) !== 0) return;
+      const tip = `Trade #${c.i}<br>Equity: $${Math.round(c.pt.eq).toLocaleString()}<br>Change: ${c.pt.pnl >= 0 ? '+' : ''}$${c.pt.pnl}`;
+      dotsHtml += `<circle cx="${c.x}" cy="${c.y}" r="4" fill="#10B981" opacity="0.6" style="cursor:pointer;" onmousemove="showTooltip(event, '${tip}')" onmouseleave="hideTooltip()"/>`;
+    });
+
     svg.innerHTML = `
       <defs>
         <linearGradient id="eqGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#10B981" stop-opacity="0.25"/><stop offset="100%" stop-color="#10B981" stop-opacity="0.0"/></linearGradient>
@@ -624,91 +872,141 @@
       <line x1="${p}" y1="${h-p}" x2="${w-p}" y2="${h-p}" stroke="#E2E8F0"/>
       <polygon points="${ptsStr} ${w-p},${h-p} ${p},${h-p}" fill="url(#eqGrad)"/>
       <polyline points="${ptsStr}" fill="none" stroke="#10B981" stroke-width="2.5"/>
+      ${dotsHtml}
     `;
   }
 
+  // --- Trade-by-Trade Performance with Zoom & Hover Tooltips ---
   function renderTradeBarsChart(trades) {
     const svg = document.getElementById('svgTradeBars');
-    const rVals = trades.map(t => t.r_multiple || 0);
-    if (!rVals.length) return;
+    let displayedTrades = trades;
+    if (tradeBarsZoomLimit > 0 && trades.length > tradeBarsZoomLimit) {
+      displayedTrades = trades.slice(-tradeBarsZoomLimit);
+    }
+    if (!displayedTrades.length) return;
+
     const w = 500, h = 240, p = 24, zeroY = h / 2;
+    const rVals = displayedTrades.map(t => t.r_multiple || 0);
     const maxR = Math.max(3, ...rVals.map(Math.abs));
-    const barWidth = Math.max(2, (w - p * 2) / rVals.length - 1.5);
+    const barWidth = Math.max(4, (w - p * 2) / displayedTrades.length - 2);
+
     let bars = `<line x1="${p}" y1="${zeroY}" x2="${w-p}" y2="${zeroY}" stroke="#94A3B8" stroke-dasharray="3,3"/>`;
-    rVals.forEach((r, i) => {
-      const x = p + i * ((w - p * 2) / rVals.length);
+    displayedTrades.forEach((t, i) => {
+      const r = t.r_multiple || 0;
+      const x = p + i * ((w - p * 2) / displayedTrades.length);
       const barH = (Math.abs(r) / maxR) * (h / 2 - p);
-      bars += `<rect x="${x}" y="${r >= 0 ? zeroY - barH : zeroY}" width="${barWidth}" height="${Math.max(2, barH)}" fill="${r > 0.2 ? '#10B981' : (r < -0.2 ? '#EF4444' : '#F59E0B')}" rx="1"/>`;
+      const y = r >= 0 ? zeroY - barH : zeroY;
+      const color = r > 0.2 ? '#10B981' : (r < -0.2 ? '#EF4444' : '#F59E0B');
+      const tip = `${t.trade_id} (${t.direction})<br>R-Mult: ${r >= 0 ? '+' : ''}${r}R<br>Net PnL: $${t.net_pnl}<br>Lots: ${t.contracts || 1}`;
+
+      bars += `
+        <rect x="${x}" y="${y}" width="${barWidth}" height="${Math.max(3, barH)}" fill="${color}" rx="1.5"
+              style="cursor:pointer;" onmousemove="showTooltip(event, '${tip}')" onmouseleave="hideTooltip()" onclick="openAudit('${t.trade_id}')"/>`;
     });
     svg.innerHTML = bars;
   }
 
+  // --- Interactive Donut Charts with Hover ---
   function renderOutcomeDonut(trades) {
     const wins = trades.filter(t => (t.r_multiple || 0) > 0.2).length;
     const losses = trades.filter(t => (t.r_multiple || 0) < -0.2).length;
-    drawDonut('svgOutcomeDonut', [{ val: wins, color: '#10B981' }, { val: losses, color: '#EF4444' }, { val: trades.length - wins - losses, color: '#F59E0B' }]);
+    drawDonut('svgOutcomeDonut', [
+      { label: 'Win', val: wins, color: '#10B981' },
+      { label: 'Loss', val: losses, color: '#EF4444' },
+      { label: 'C2C', val: trades.length - wins - losses, color: '#F59E0B' }
+    ]);
   }
 
   function renderExitDonut(trades) {
     const map = {};
     trades.forEach(t => map[t.exit_reason || 'TRAILING_STOP'] = (map[t.exit_reason || 'TRAILING_STOP'] || 0) + 1);
     const colors = ['#0EA5E9', '#10B981', '#F59E0B', '#EF4444'];
-    drawDonut('svgExitDonut', Object.values(map).map((v, i) => ({ val: v, color: colors[i % colors.length] })));
+    drawDonut('svgExitDonut', Object.entries(map).map(([k, v], i) => ({ label: k, val: v, color: colors[i % colors.length] })));
   }
 
   function drawDonut(svgId, items) {
     const svg = document.getElementById(svgId);
     const total = items.reduce((acc, x) => acc + x.val, 0) || 1;
     let cum = 0, paths = '', r = 70, cx = 120, cy = 120;
+
     items.forEach(it => {
       const frac = it.val / total;
       if (frac === 0) return;
       const a1 = cum * 2 * Math.PI; cum += frac; const a2 = cum * 2 * Math.PI;
-      paths += `<path d="M ${cx + r * Math.sin(a1)} ${cy - r * Math.cos(a1)} A ${r} ${r} 0 ${frac > 0.5 ? 1 : 0} 1 ${cx + r * Math.sin(a2)} ${cy - r * Math.cos(a2)}" fill="none" stroke="${it.color}" stroke-width="26"/>`;
+      const pct = Math.round(frac * 100);
+      const tip = `${it.label}: ${it.val} trades (${pct}%)`;
+
+      paths += `<path d="M ${cx + r * Math.sin(a1)} ${cy - r * Math.cos(a1)} A ${r} ${r} 0 ${frac > 0.5 ? 1 : 0} 1 ${cx + r * Math.sin(a2)} ${cy - r * Math.cos(a2)}"
+                     fill="none" stroke="${it.color}" stroke-width="26" style="cursor:pointer;" onmousemove="showTooltip(event, '${tip}')" onmouseleave="hideTooltip()"/>`;
     });
     svg.innerHTML = `${paths}<text x="${cx}" y="${cy+6}" text-anchor="middle" font-size="18" font-weight="800" fill="#0F172A">${total}</text>`;
   }
 
+  // --- Long vs Short Chart with Hover ---
   function renderLongShortChart(trades) {
     const svg = document.getElementById('svgLongShort');
-    const longPnl = trades.filter(t => t.direction === 'LONG').reduce((acc, t) => acc + (t.net_pnl || 0), 0);
-    const shortPnl = trades.filter(t => t.direction === 'SHORT').reduce((acc, t) => acc + (t.net_pnl || 0), 0);
+    const longs = trades.filter(t => t.direction === 'LONG');
+    const shorts = trades.filter(t => t.direction === 'SHORT');
+    const longPnl = longs.reduce((acc, t) => acc + (t.net_pnl || 0), 0);
+    const shortPnl = shorts.reduce((acc, t) => acc + (t.net_pnl || 0), 0);
+
     const maxVal = Math.max(100, Math.abs(longPnl), Math.abs(shortPnl));
     const zeroY = 140, lH = (Math.abs(longPnl) / maxVal) * 80, sH = (Math.abs(shortPnl) / maxVal) * 80;
+
+    const tipL = `BUY (LONG)<br>Net PnL: $${Math.round(longPnl)}<br>Trades: ${longs.length}`;
+    const tipS = `SELL (SHORT)<br>Net PnL: $${Math.round(shortPnl)}<br>Trades: ${shorts.length}`;
+
     svg.innerHTML = `
       <line x1="40" y1="${zeroY}" x2="460" y2="${zeroY}" stroke="#E2E8F0"/>
-      <rect x="130" y="${longPnl >= 0 ? zeroY - lH : zeroY}" width="70" height="${Math.max(4, lH)}" fill="${longPnl >= 0 ? '#10B981' : '#EF4444'}" rx="4"/>
+      <rect x="130" y="${longPnl >= 0 ? zeroY - lH : zeroY}" width="70" height="${Math.max(4, lH)}" fill="${longPnl >= 0 ? '#10B981' : '#EF4444'}" rx="4"
+            style="cursor:pointer;" onmousemove="showTooltip(event, '${tipL}')" onmouseleave="hideTooltip()"/>
       <text x="165" y="${zeroY + 22}" text-anchor="middle" font-size="12" font-weight="700">BUY (LONG)</text>
       <text x="165" y="${longPnl >= 0 ? zeroY - lH - 8 : zeroY + lH + 16}" text-anchor="middle" font-size="13" font-weight="800">$${Math.round(longPnl)}</text>
-      <rect x="300" y="${shortPnl >= 0 ? zeroY - sH : zeroY}" width="70" height="${Math.max(4, sH)}" fill="${shortPnl >= 0 ? '#10B981' : '#EF4444'}" rx="4"/>
+
+      <rect x="300" y="${shortPnl >= 0 ? zeroY - sH : zeroY}" width="70" height="${Math.max(4, sH)}" fill="${shortPnl >= 0 ? '#10B981' : '#EF4444'}" rx="4"
+            style="cursor:pointer;" onmousemove="showTooltip(event, '${tipS}')" onmouseleave="hideTooltip()"/>
       <text x="335" y="${zeroY + 22}" text-anchor="middle" font-size="12" font-weight="700">SELL (SHORT)</text>
       <text x="335" y="${shortPnl >= 0 ? zeroY - sH - 8 : zeroY + sH + 16}" text-anchor="middle" font-size="13" font-weight="800">$${Math.round(shortPnl)}</text>
     `;
   }
 
+  // --- Hourly Session Performance with Hover ---
   function renderHourlyChart(trades) {
     const svg = document.getElementById('svgHourly');
     const hourMap = Array(24).fill(0);
+    const hourCount = Array(24).fill(0);
+
     trades.forEach(t => {
       const nyDate = toNYDateObj(t.entry_time);
-      if (nyDate) hourMap[nyDate.hour] += (t.net_pnl || 0);
+      if (nyDate) {
+        hourMap[nyDate.hour] += (t.net_pnl || 0);
+        hourCount[nyDate.hour] += 1;
+      }
     });
+
     const maxPnl = Math.max(50, ...hourMap.map(Math.abs));
     const w = 500, h = 240, p = 24, zeroY = h / 2, barW = (w - p * 2) / 24 - 3;
     let out = `<line x1="${p}" y1="${zeroY}" x2="${w-p}" y2="${zeroY}" stroke="#CBD5E1"/>`;
+
     hourMap.forEach((pnl, hr) => {
       const bH = (Math.abs(pnl) / maxPnl) * (h / 2 - p);
-      out += `<rect x="${p + hr * ((w - p * 2) / 24)}" y="${pnl >= 0 ? zeroY - bH : zeroY}" width="${barW}" height="${Math.max(2, bH)}" fill="${pnl >= 0 ? '#10B981' : '#EF4444'}" rx="1"/>`;
+      const tip = `${hr}:00 - ${hr}:59 EST<br>Net PnL: $${Math.round(pnl)}<br>Trades: ${hourCount[hr]}`;
+      out += `
+        <rect x="${p + hr * ((w - p * 2) / 24)}" y="${pnl >= 0 ? zeroY - bH : zeroY}" width="${barW}" height="${Math.max(2, bH)}" fill="${pnl >= 0 ? '#10B981' : '#EF4444'}" rx="1"
+              style="cursor:pointer;" onmousemove="showTooltip(event, '${tip}')" onmouseleave="hideTooltip()"/>
+        ${hr % 4 === 0 ? `<text x="${p + hr * ((w - p * 2) / 24) + barW/2}" y="${h-4}" font-size="9" text-anchor="middle" fill="#94A3B8">${hr}h</text>` : ''}
+      `;
     });
     svg.innerHTML = out;
   }
 
+  // --- Ledger Table & Audit Modal ---
   function renderLedger(trades) {
     const tbody = document.getElementById('ledgerBody');
     tbody.innerHTML = trades.slice(0, 50).map(t => {
       const nyDate = toNYDateObj(t.entry_time);
       return `
-        <tr>
+        <tr onclick="openAudit('${t.trade_id}')" style="cursor:pointer;">
           <td><strong>${t.trade_id}</strong></td>
           <td><span class="badge ${t.direction === 'LONG' ? 'long' : 'short'}">${t.direction}</span></td>
           <td style="color:var(--text-muted);">${t.setup_type || '-'}</td>
@@ -720,6 +1018,30 @@
           <td style="font-weight:700; color:${t.net_pnl >= 0 ? 'var(--green-text)' : 'var(--red-text)'};">${t.net_pnl >= 0 ? '+' : ''}$${t.net_pnl || 0}</td>
         </tr>`;
     }).join('');
+  }
+
+  function openAudit(id) {
+    const t = simTrades.find(x => x.trade_id === id) || baseTrades.find(x => x.trade_id === id);
+    if (!t) return;
+    const nyEntry = toNYDateObj(t.entry_time);
+    const nyExit = toNYDateObj(t.exit_time);
+
+    document.getElementById('modalId').innerText = `Trade Audit: ${t.trade_id}`;
+    document.getElementById('modalBody').innerHTML = `
+      <p><strong>Setup Type:</strong> ${t.setup_type}</p>
+      <p><strong>Direction:</strong> ${t.direction}</p>
+      <p><strong>Position Size:</strong> ${t.contracts || 1} Contracts</p>
+      <p><strong>Entry (EST):</strong> $${t.entry_price} (${nyEntry ? nyEntry.formattedTime : t.entry_time})</p>
+      <p><strong>Exit (EST):</strong> $${t.exit_price || '-'} (${nyExit ? nyExit.formattedTime : t.exit_time || '-'})</p>
+      <p><strong>R-Multiple:</strong> ${t.r_multiple}R</p>
+      <p><strong>Net P&L:</strong> $${t.net_pnl}</p>
+      <p><strong>Exit Reason:</strong> ${t.exit_reason || '-'}</p>
+    `;
+    document.getElementById('auditModal').style.display = 'flex';
+  }
+
+  function closeModal() {
+    document.getElementById('auditModal').style.display = 'none';
   }
 
   function getFallbackData() {
