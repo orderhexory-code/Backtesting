@@ -1,0 +1,99 @@
+name: 1-Click NASDAQ Backtest & Live Report
+
+on:
+  workflow_dispatch:
+    inputs:
+      data_mode:
+        description: "Data Source Select Karein"
+        required: true
+        type: choice
+        options:
+          - "yfinance_1m_NQ"      # Yahoo Finance se 1m NASDAQ Futures data
+          - "yfinance_1m_QQQ"     # Yahoo Finance se 1m NASDAQ ETF data
+          - "synthetic_scenario"  # High-Precision Multi-Timeframe Test Data
+        default: "yfinance_1m_NQ"
+      days_to_fetch:
+        description: "Kitne Din Ka 1M Data Chahiye (Max 7 days for yfinance)"
+        required: true
+        default: "7"
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  run-backtest:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install Dependencies
+        run: |
+          pip install --upgrade pip
+          pip install pandas numpy pyarrow fastparquet pydantic pyyaml click plotly jinja2 tabulate yfinance requests
+
+      - name: Auto-Fetch 1-Minute Data
+        run: |
+          mkdir -p data/processed results
+          if [ "${{ github.event.inputs.data_mode }}" = "yfinance_1m_NQ" ]; then
+            python -c "
+          from src.data_fetcher import FreeDataFetcher
+          FreeDataFetcher.fetch_yfinance_1m(symbol='NQ=F', days=${{ github.event.inputs.days_to_fetch }}, output_path='data/processed/MNQ_1m.parquet')
+          "
+          elif [ "${{ github.event.inputs.data_mode }}" = "yfinance_1m_QQQ" ]; then
+            python -c "
+          from src.data_fetcher import FreeDataFetcher
+          FreeDataFetcher.fetch_yfinance_1m(symbol='QQQ', days=${{ github.event.inputs.days_to_fetch }}, output_path='data/processed/MNQ_1m.parquet')
+          "
+          else
+            python main.py generate-synthetic --output data/processed/MNQ_1m.parquet --hours 72 --scenario upside_breakout
+          fi
+
+      - name: Validate Data
+        run: |
+          python main.py validate-data --data data/processed/MNQ_1m.parquet --report-out results/data_quality.json
+
+      - name: Execute Chronological Backtest
+        run: |
+          python main.py backtest --data data/processed/MNQ_1m.parquet --config config/strategy.yaml --output-dir results/
+
+      - name: Prepare Live GitHub Pages
+        run: |
+          cp results/report.html results/index.html
+
+      - name: Upload Artifacts (Downloadable ZIP)
+        uses: actions/upload-artifact@v4
+        with:
+          name: backtest-report-${{ github.run_id }}
+          path: results/
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload Pages Artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: "results/"
+
+  deploy-pages:
+    needs: run-backtest
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

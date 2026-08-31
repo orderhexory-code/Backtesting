@@ -1,0 +1,54 @@
+instrument:
+  symbol: "MNQ"
+  tick_size: 0.25
+  tick_value: 0.50
+  point_value: 2.00
+
+timezone:
+  data: "UTC"
+  strategy: "America/New_York"
+
+timeframes:
+  base: "1m"
+  confirmation: "5m"
+  setup: "15m"
+  reference: "1h"
+
+levels:
+  breakout_reference: "reference_extreme"
+  confirmation_level: "reference_extreme"
+
+entry:
+  execution: "next_bar_open"
+
+stop_loss:
+  method: "entry_structure"
+  buffer_ticks: 1
+
+position:
+  mode: "fixed_contracts"
+  contracts: 1
+  risk_per_trade: 100.0
+
+account:
+  initial_balance: 10000.0
+
+risk:
+  max_concurrent_trades: null
+  max_total_risk: null
+
+execution:
+  commission_per_contract: 0.62
+  slippage_ticks: 1
+  intrabar_mode: "conservative"
+
+trailing:
+  activate_at_r: 1
+  second_stage_at_r: 3
+  trail_increment_r: 1
+
+setup:
+  expiration: "next_reference_hour"
+
+strategy:
+  max_entries_per_setup: 1
