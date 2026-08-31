@@ -26,9 +26,10 @@ stop_loss:
   buffer_ticks: 1
 
 position:
-  mode: "fixed_contracts"
+  mode: "percent_risk"     # Modes: "percent_risk" | "fixed_risk" | "fixed_contracts"
   contracts: 1
   risk_per_trade: 100.0
+  risk_percent: 1.0        # Fund ka 1.0% risk per trade (Dynamic Compounding)
 
 account:
   initial_balance: 10000.0
@@ -43,9 +44,9 @@ execution:
   intrabar_mode: "conservative"
 
 trailing:
-  activate_at_r: 1
-  second_stage_at_r: 3
-  trail_increment_r: 1
+  activate_at_r: 1.0
+  second_stage_at_r: 3.0
+  trail_increment_r: 1.0
 
 setup:
   expiration: "next_reference_hour"
