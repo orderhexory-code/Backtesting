@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NASDAQ Backtest Hub</title>
+  <title>NASDAQ Strategy Backtest</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
   <style>
@@ -29,11 +29,11 @@
       --yellow-text: #B45309;
       --blue: #0EA5E9;
       --blue-bg: #F0F9FF;
-      --radius-lg: 20px;
-      --radius-md: 14px;
+      --radius-lg: 16px;
+      --radius-md: 12px;
       --radius-pill: 9999px;
-      --shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05);
-      --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.06);
+      --shadow: 0 2px 12px -2px rgba(15, 23, 42, 0.05);
+      --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.05);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -47,18 +47,17 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* Top Navigation Bar */
+    /* Minimal Text Navbar (No logo, no excess padding) */
     .top-navbar {
       background: var(--nav-bg);
       border-bottom: 1px solid var(--border);
       position: sticky;
       top: 0;
       z-index: 100;
-      padding: 12px 24px;
-      box-shadow: 0 2px 10px rgba(15, 23, 42, 0.03);
+      padding: 14px 24px;
     }
     .nav-container {
-      max-width: 1350px;
+      max-width: 1280px;
       margin: 0 auto;
       display: flex;
       align-items: center;
@@ -66,48 +65,35 @@
       gap: 16px;
       flex-wrap: wrap;
     }
-    .brand-wrap {
-      display: flex;
-      align-items: center;
-      gap: 10px;
+    .brand-text {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.3px;
     }
-    .brand-avatar {
-      width: 36px; height: 36px; border-radius: 10px;
-      background: #0F172A; color: #FFF;
-      display: flex; align-items: center; justify-content: center;
-      font-weight: 800; font-size: 13px;
-    }
-    .brand-title { font-size: 15px; font-weight: 800; }
-    .brand-sub { font-size: 11px; color: var(--text-muted); font-weight: 600; }
 
     .nav-links {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 4px;
       background: var(--card-sub);
-      padding: 4px;
+      padding: 3px;
       border-radius: var(--radius-pill);
       border: 1px solid var(--border);
     }
     .nav-item {
-      display: flex; align-items: center; gap: 8px;
-      padding: 8px 16px;
+      padding: 6px 14px;
       border-radius: var(--radius-pill);
-      font-size: 13px; font-weight: 700;
+      font-size: 12px;
+      font-weight: 700;
       color: var(--text-muted);
       cursor: pointer;
       transition: all 0.15s;
+      user-select: none;
     }
     .nav-item:hover { color: var(--text); }
     .nav-item.active { background: #0F172A; color: #FFFFFF; }
-    .icon { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
-    .icon.icon-md { width: 16px; height: 16px; }
 
-    .nav-right {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
     .tz-badge {
       background: #EEF2F6; color: #0F172A; font-size: 11px;
       font-weight: 700; padding: 4px 10px; border-radius: var(--radius-pill);
@@ -115,7 +101,7 @@
 
     /* Main Container */
     .main-wrapper {
-      max-width: 1350px;
+      max-width: 1280px;
       width: 100%;
       margin: 0 auto;
       padding: 24px 20px 48px;
@@ -125,11 +111,11 @@
     .page-section { display: none; }
     .page-section.active { display: block; }
 
-    /* Hero Overview Card */
+    /* Overview Header Card */
     .hero-card {
       background: var(--card);
       border-radius: var(--radius-lg);
-      padding: 26px;
+      padding: 24px;
       border: 1px solid var(--border);
       box-shadow: var(--shadow);
       margin-bottom: 20px;
@@ -139,158 +125,154 @@
       align-items: center;
       gap: 20px;
     }
-    .hero-tag { font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.8px; }
-    .hero-balance-wrap { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-top: 4px; }
-    .hero-balance { font-size: 38px; font-weight: 800; letter-spacing: -1px; }
-    .hero-currency { font-size: 20px; font-weight: 700; color: var(--text-muted); }
-    .profit-pill { font-size: 14px; font-weight: 700; padding: 4px 12px; border-radius: var(--radius-pill); font-family: 'JetBrains Mono', monospace; }
+    .hero-tag { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.8px; }
+    .hero-balance-wrap { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-top: 4px; }
+    .hero-balance { font-size: 34px; font-weight: 800; letter-spacing: -1px; }
+    .hero-currency { font-size: 18px; font-weight: 700; color: var(--text-muted); }
+    .profit-pill { font-size: 13px; font-weight: 700; padding: 4px 10px; border-radius: var(--radius-pill); font-family: 'JetBrains Mono', monospace; }
     .profit-pill.win { background: var(--green-bg); color: var(--green-text); }
     .profit-pill.loss { background: var(--red-bg); color: var(--red-text); }
-    .capital-subline { font-size: 13px; color: var(--text-muted); font-weight: 600; margin-top: 6px; }
+    .capital-subline { font-size: 13px; color: var(--text-muted); font-weight: 600; margin-top: 4px; }
     .capital-subline strong { color: var(--text); }
 
     .btn-pill {
-      background: var(--btn-black); color: #FFFFFF; border: none; padding: 10px 18px;
-      border-radius: var(--radius-pill); font-size: 13px; font-weight: 700; font-family: inherit;
+      background: var(--btn-black); color: #FFFFFF; border: none; padding: 9px 16px;
+      border-radius: var(--radius-pill); font-size: 12px; font-weight: 700; font-family: inherit;
       cursor: pointer; display: inline-flex; align-items: center; gap: 6px; text-decoration: none; transition: all 0.15s;
     }
     .btn-pill:hover { background: var(--btn-black-hover); transform: translateY(-1px); }
-    .btn-pill.sm { padding: 6px 12px; font-size: 11px; }
+    .btn-pill.sm { padding: 5px 10px; font-size: 11px; }
     .btn-pill.sec { background: var(--card-sub); color: var(--text); border: 1px solid var(--border); }
     .btn-pill.sec:hover { background: #E2E8F0; }
 
     /* KPI Summary Grid */
     .kpi-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 14px; margin-bottom: 20px;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 12px; margin-bottom: 20px;
     }
     .kpi-card {
       background: var(--card); border: 1px solid var(--border);
-      border-radius: var(--radius-md); padding: 16px 18px; box-shadow: var(--shadow-sm);
+      border-radius: var(--radius-md); padding: 16px; box-shadow: var(--shadow-sm);
     }
     .kpi-label { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px; }
-    .kpi-val { font-size: 22px; font-weight: 800; font-family: 'JetBrains Mono', monospace; }
-    .kpi-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; font-weight: 600; }
+    .kpi-val { font-size: 20px; font-weight: 800; font-family: 'JetBrains Mono', monospace; }
+    .kpi-sub { font-size: 11px; color: var(--text-muted); margin-top: 2px; font-weight: 600; }
 
     /* TradeZella Calendar */
     .calendar-card {
       background: var(--card); border: 1px solid var(--border);
-      border-radius: var(--radius-lg); padding: 24px; box-shadow: var(--shadow); margin-bottom: 20px;
+      border-radius: var(--radius-lg); padding: 22px; box-shadow: var(--shadow); margin-bottom: 20px;
     }
-    .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-    .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; }
-    .cal-weekday { text-align: center; font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; padding-bottom: 8px; }
+    .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+    .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+    .cal-weekday { text-align: center; font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; padding-bottom: 6px; }
     .cal-day {
-      background: var(--card-sub); border: 1px solid var(--border); border-radius: var(--radius-md);
-      min-height: 84px; padding: 8px 10px; display: flex; flex-direction: column; justify-content: space-between;
+      background: var(--card-sub); border: 1px solid var(--border); border-radius: 10px;
+      min-height: 74px; padding: 6px 8px; display: flex; flex-direction: column; justify-content: space-between;
       cursor: pointer; transition: transform 0.1s;
     }
     .cal-day:hover { transform: scale(1.02); }
     .cal-day.empty { background: transparent; border-color: transparent; cursor: default; }
     .cal-day.profit { background: var(--green-bg); border-color: #A7F3D0; }
     .cal-day.loss { background: var(--red-bg); border-color: #FECACA; }
-    .cal-day-num { font-size: 12px; font-weight: 700; color: var(--text-muted); }
-    .cal-day-pnl { font-size: 14px; font-weight: 800; font-family: 'JetBrains Mono', monospace; }
+    .cal-day-num { font-size: 11px; font-weight: 700; color: var(--text-muted); }
+    .cal-day-pnl { font-size: 13px; font-weight: 800; font-family: 'JetBrains Mono', monospace; }
     .cal-day.profit .cal-day-pnl { color: var(--green-text); }
     .cal-day.loss .cal-day-pnl { color: var(--red-text); }
     .cal-day-trades { font-size: 10px; font-weight: 700; color: var(--text-muted); }
 
     /* Chart Layout */
-    .grid-2col { display: grid; grid-template-columns: repeat(auto-fit, minmax(440px, 1fr)); gap: 18px; margin-bottom: 20px; }
-    @media (max-width: 900px) {
+    .grid-2col { display: grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 16px; margin-bottom: 20px; }
+    @media (max-width: 800px) {
       .grid-2col { grid-template-columns: 1fr; }
-      .nav-container { flex-direction: column; align-items: stretch; }
-      .nav-links { justify-content: center; }
-      .cal-grid { gap: 4px; }
-      .cal-day { min-height: 64px; padding: 4px; }
+      .cal-grid { gap: 3px; }
+      .cal-day { min-height: 60px; padding: 4px; }
       .cal-day-pnl { font-size: 11px; }
     }
 
     .chart-card {
       background: var(--card); border: 1px solid var(--border);
-      border-radius: var(--radius-lg); padding: 22px; box-shadow: var(--shadow-sm);
+      border-radius: var(--radius-lg); padding: 20px; box-shadow: var(--shadow-sm);
       position: relative;
     }
-    .chart-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
-    .chart-title { font-size: 15px; font-weight: 800; }
-    .chart-sub { font-size: 12px; color: var(--text-muted); }
-    .svg-box { width: 100%; height: 240px; position: relative; }
+    .chart-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .chart-title { font-size: 14px; font-weight: 800; }
+    .chart-sub { font-size: 11px; color: var(--text-muted); }
+    .svg-box { width: 100%; height: 230px; position: relative; }
     svg { width: 100%; height: 100%; overflow: visible; }
 
     /* Floating Tooltip */
     #chartTooltip {
       position: fixed;
       display: none;
-      background: rgba(15, 23, 42, 0.92);
+      background: rgba(15, 23, 42, 0.94);
       color: #FFFFFF;
       padding: 8px 12px;
-      border-radius: 8px;
-      font-size: 12px;
+      border-radius: 6px;
+      font-size: 11px;
       font-family: 'JetBrains Mono', monospace;
       pointer-events: none;
       z-index: 1000;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
       border: 1px solid rgba(255,255,255,0.1);
       line-height: 1.5;
     }
 
-    /* Simulator Panel */
+    /* Simulator Panel (Real-Time Reactive) */
     .simulator-card {
       background: var(--card); border: 1px solid var(--border);
-      border-radius: var(--radius-lg); padding: 28px; box-shadow: var(--shadow);
+      border-radius: var(--radius-lg); padding: 24px; box-shadow: var(--shadow);
+      margin-bottom: 20px;
     }
     .sim-controls {
       display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 24px; margin: 24px 0;
+      gap: 20px; margin: 20px 0;
     }
     .control-box {
       background: var(--card-sub); border: 1px solid var(--border);
-      border-radius: var(--radius-md); padding: 20px;
+      border-radius: var(--radius-md); padding: 18px;
     }
     .control-label { font-size: 13px; font-weight: 700; margin-bottom: 8px; display: flex; justify-content: space-between; }
     .control-input {
-      width: 100%; padding: 12px; border-radius: var(--radius-md); border: 1px solid var(--border);
-      font-size: 16px; font-weight: 700; font-family: 'JetBrains Mono', monospace; outline: none; margin-top: 6px;
+      width: 100%; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border);
+      font-size: 16px; font-weight: 700; font-family: 'JetBrains Mono', monospace; outline: none; margin-top: 4px;
     }
-    .control-slider { width: 100%; margin-top: 12px; accent-color: #0F172A; cursor: pointer; }
+    .control-slider { width: 100%; margin-top: 10px; accent-color: #0F172A; cursor: pointer; }
+
+    .preset-btns { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
 
     /* Strategy Documentation Guide */
     .guide-card {
       background: var(--card); border: 1px solid var(--border);
-      border-radius: var(--radius-lg); padding: 32px; box-shadow: var(--shadow);
+      border-radius: var(--radius-lg); padding: 28px; box-shadow: var(--shadow);
       margin-bottom: 24px;
     }
     .guide-section {
       border-bottom: 1px solid var(--border);
-      padding-bottom: 24px;
-      margin-bottom: 24px;
+      padding-bottom: 20px;
+      margin-bottom: 20px;
     }
     .guide-section:last-child { border-bottom: none; padding-bottom: 0; margin-bottom: 0; }
-    .guide-header {
-      font-size: 18px; font-weight: 800; margin-bottom: 12px; color: var(--text);
-      display: flex; align-items: center; gap: 8px;
-    }
-    .guide-body {
-      font-size: 14px; line-height: 1.7; color: #334155;
-    }
+    .guide-header { font-size: 16px; font-weight: 800; margin-bottom: 10px; color: var(--text); }
+    .guide-body { font-size: 13px; line-height: 1.7; color: #334155; }
     .rule-box {
       background: var(--card-sub); border: 1px solid var(--border);
-      border-radius: var(--radius-md); padding: 16px 20px; margin: 12px 0;
+      border-radius: 10px; padding: 14px 18px; margin: 10px 0;
     }
-    .rule-title { font-weight: 700; color: var(--text); margin-bottom: 4px; font-size: 14px; }
-    .rule-desc { font-size: 13px; color: var(--text-muted); }
+    .rule-title { font-weight: 700; color: var(--text); margin-bottom: 3px; font-size: 13px; }
+    .rule-desc { font-size: 12px; color: var(--text-muted); }
 
     /* Table */
     .ledger-card {
       background: var(--card); border: 1px solid var(--border);
-      border-radius: var(--radius-lg); padding: 24px; box-shadow: var(--shadow); overflow-x: auto;
+      border-radius: var(--radius-lg); padding: 22px; box-shadow: var(--shadow); overflow-x: auto;
     }
-    table { width: 100%; border-collapse: collapse; font-size: 13px; font-family: 'JetBrains Mono', monospace; }
-    th { text-align: left; padding: 12px 14px; color: var(--text-muted); border-bottom: 1px solid var(--border); font-size: 11px; text-transform: uppercase; font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700; }
-    td { padding: 12px 14px; border-bottom: 1px solid #F1F5F9; }
+    table { width: 100%; border-collapse: collapse; font-size: 12px; font-family: 'JetBrains Mono', monospace; }
+    th { text-align: left; padding: 10px 12px; color: var(--text-muted); border-bottom: 1px solid var(--border); font-size: 11px; text-transform: uppercase; font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700; }
+    td { padding: 10px 12px; border-bottom: 1px solid #F1F5F9; }
     tr:hover td { background: var(--card-sub); }
-    .badge { display: inline-block; padding: 3px 8px; border-radius: var(--radius-pill); font-size: 11px; font-weight: 700; }
+    .badge { display: inline-block; padding: 2px 7px; border-radius: var(--radius-pill); font-size: 10px; font-weight: 700; }
     .badge.long { background: var(--green-bg); color: var(--green-text); }
     .badge.short { background: var(--red-bg); color: var(--red-text); }
     .badge.win { background: var(--green-bg); color: var(--green-text); }
@@ -298,13 +280,13 @@
 
     /* Modal */
     .modal-overlay {
-      position: fixed; inset: 0; background: rgba(15, 23, 42, 0.5);
+      position: fixed; inset: 0; background: rgba(15, 23, 42, 0.4);
       backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center;
       padding: 16px; z-index: 2000;
     }
     .modal-card {
-      background: #FFFFFF; border-radius: var(--radius-lg); max-width: 480px; width: 100%; padding: 24px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+      background: #FFFFFF; border-radius: var(--radius-lg); max-width: 440px; width: 100%; padding: 22px;
+      box-shadow: 0 16px 36px rgba(0,0,0,0.12);
     }
   </style>
 </head>
@@ -313,65 +295,18 @@
   <!-- Floating Global Tooltip -->
   <div id="chartTooltip"></div>
 
-  <!-- SVG Icon Sprite -->
-  <svg width="0" height="0" style="position:absolute;">
-    <defs>
-      <symbol id="icon-overview" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
-      </symbol>
-      <symbol id="icon-zap" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
-      </symbol>
-      <symbol id="icon-book" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
-      </symbol>
-      <symbol id="icon-download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
-      </symbol>
-      <symbol id="icon-chevron-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="15 18 9 12 15 6"/>
-      </symbol>
-      <symbol id="icon-chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="9 18 15 12 9 6"/>
-      </symbol>
-      <symbol id="icon-rotate-ccw" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/>
-      </symbol>
-      <symbol id="icon-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-      </symbol>
-      <symbol id="icon-check-circle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
-      </symbol>
-    </defs>
-  </svg>
-
-  <!-- Top Navbar -->
+  <!-- Minimal Text Navbar -->
   <header class="top-navbar">
     <div class="nav-container">
-      <div class="brand-wrap">
-        <div class="brand-avatar">NQ</div>
-        <div>
-          <div class="brand-title">NASDAQ Backtest Hub</div>
-          <div class="brand-sub">Multi-Timeframe Strategy Engine</div>
-        </div>
-      </div>
+      <div class="brand-text">NASDAQ Strategy Backtest</div>
 
       <nav class="nav-links">
-        <div class="nav-item active" onclick="switchTab('overview', this)">
-          <svg class="icon icon-md"><use href="#icon-overview"/></svg> Overview
-        </div>
-        <div class="nav-item" onclick="switchTab('simulator', this)">
-          <svg class="icon icon-md"><use href="#icon-zap"/></svg> Capital Simulator
-        </div>
-        <div class="nav-item" onclick="switchTab('guide', this)">
-          <svg class="icon icon-md"><use href="#icon-book"/></svg> Strategy Guide
-        </div>
+        <div class="nav-item active" onclick="switchTab('overview', this)">Overview</div>
+        <div class="nav-item" onclick="switchTab('simulator', this)">Capital Simulator</div>
+        <div class="nav-item" onclick="switchTab('guide', this)">Strategy Guide</div>
       </nav>
 
-      <div class="nav-right">
-        <span class="tz-badge">America/New_York (EST)</span>
-      </div>
+      <div class="tz-badge">America/New_York (EST)</div>
     </div>
   </header>
 
@@ -382,25 +317,22 @@
     <section id="tab-overview" class="page-section active">
       <div class="hero-card">
         <div>
-          <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
-            <span class="hero-tag">NASDAQ Futures · Strategy Overview</span>
-            <span class="tz-badge">EST/EDT Timezone</span>
-          </div>
+          <div class="hero-tag">Strategy Performance Overview</div>
           <div class="hero-balance-wrap">
             <div class="hero-balance" id="heroCurrentEquity">$10,000.00</div>
-            <div class="hero-currency">USD Account Balance</div>
+            <div class="hero-currency">USD Balance</div>
             <div class="profit-pill" id="heroProfitPill">+$0.00 (+0.00%)</div>
           </div>
           <div class="capital-subline">
-            Starting Capital: <strong id="heroStartingFund">$10,000.00</strong> · Realized Net PnL: <strong id="heroNetPnl">$0.00</strong>
+            Starting Capital: <strong id="heroStartingFund">$10,000.00</strong> · Net Realized: <strong id="heroNetPnl">$0.00</strong>
           </div>
         </div>
         <div>
-          <button class="btn-pill" id="csvDownloadBtn" onclick="exportCSV()"><svg class="icon"><use href="#icon-download"/></svg> Export CSV</button>
+          <button class="btn-pill" id="csvDownloadBtn" onclick="exportCSV()">Download CSV</button>
         </div>
       </div>
 
-      <!-- KPI Grid -->
+      <!-- KPI Summary Grid -->
       <div class="kpi-grid">
         <div class="kpi-card">
           <div class="kpi-label">Win Rate</div>
@@ -429,14 +361,14 @@
         </div>
       </div>
 
-      <!-- P&L Calendar -->
+      <!-- TradeZella P&L Calendar -->
       <div class="calendar-card">
         <div class="cal-header">
-          <div style="font-size:18px; font-weight:800;">P&L Calendar (New York Time)</div>
-          <div style="display:flex; align-items:center; gap:8px;">
-            <button onclick="changeMonth(-1)" class="btn-pill sec sm"><svg class="icon"><use href="#icon-chevron-left"/></svg> Prev</button>
-            <span id="calMonthDisplay" style="font-weight:700; min-width:130px; text-align:center;">Month</span>
-            <button onclick="changeMonth(1)" class="btn-pill sec sm">Next <svg class="icon"><use href="#icon-chevron-right"/></svg></button>
+          <div style="font-size:16px; font-weight:800;">P&L Calendar (New York Time)</div>
+          <div style="display:flex; align-items:center; gap:6px;">
+            <button onclick="changeMonth(-1)" class="btn-pill sec sm">‹ Prev</button>
+            <span id="calMonthDisplay" style="font-weight:700; min-width:120px; text-align:center; font-size:13px;">Month</span>
+            <button onclick="changeMonth(1)" class="btn-pill sec sm">Next ›</button>
           </div>
         </div>
         <div class="cal-grid" id="calGrid"></div>
@@ -449,10 +381,10 @@
           <div class="chart-header-row">
             <div>
               <div class="chart-title">1. Equity Curve & Capital Growth</div>
-              <div class="chart-sub">Hover to inspect balance ($)</div>
+              <div class="chart-sub">Account balance trajectory ($)</div>
             </div>
           </div>
-          <div class="svg-box"><svg id="svgEquity" viewBox="0 0 500 240"></svg></div>
+          <div class="svg-box"><svg id="svgEquity" viewBox="0 0 500 230"></svg></div>
         </div>
 
         <!-- Chart 2: Trade-by-Trade Performance -->
@@ -462,13 +394,13 @@
               <div class="chart-title">2. Trade-by-Trade Performance</div>
               <div class="chart-sub">Sequential R-Multiples</div>
             </div>
-            <div style="display:flex; gap:6px;">
+            <div style="display:flex; gap:4px;">
               <button class="btn-pill sm" onclick="setTradeBarsZoom(30, this)">Last 30</button>
               <button class="btn-pill sec sm" onclick="setTradeBarsZoom(60, this)">Last 60</button>
               <button class="btn-pill sec sm" onclick="setTradeBarsZoom(0, this)">All</button>
             </div>
           </div>
-          <div class="svg-box"><svg id="svgTradeBars" viewBox="0 0 500 240"></svg></div>
+          <div class="svg-box"><svg id="svgTradeBars" viewBox="0 0 500 230"></svg></div>
         </div>
 
         <!-- Chart 3: Outcome Distribution -->
@@ -479,7 +411,7 @@
               <div class="chart-sub">Win % vs Loss % vs C2C %</div>
             </div>
           </div>
-          <div class="svg-box" style="display:flex; justify-content:center;"><svg id="svgOutcomeDonut" viewBox="0 0 240 240" style="max-width:220px;"></svg></div>
+          <div class="svg-box" style="display:flex; justify-content:center;"><svg id="svgOutcomeDonut" viewBox="0 0 240 230" style="max-width:210px;"></svg></div>
         </div>
 
         <!-- Chart 4: Exit Reason Breakdown -->
@@ -487,10 +419,10 @@
           <div class="chart-header-row">
             <div>
               <div class="chart-title">4. Exit Reason Breakdown</div>
-              <div class="chart-sub">Audit trail triggers</div>
+              <div class="chart-sub">Execution triggers</div>
             </div>
           </div>
-          <div class="svg-box" style="display:flex; justify-content:center;"><svg id="svgExitDonut" viewBox="0 0 240 240" style="max-width:220px;"></svg></div>
+          <div class="svg-box" style="display:flex; justify-content:center;"><svg id="svgExitDonut" viewBox="0 0 240 230" style="max-width:210px;"></svg></div>
         </div>
 
         <!-- Chart 5: Long vs Short Performance -->
@@ -501,7 +433,7 @@
               <div class="chart-sub">Buy vs Sell Net P&L comparison ($)</div>
             </div>
           </div>
-          <div class="svg-box"><svg id="svgLongShort" viewBox="0 0 500 240"></svg></div>
+          <div class="svg-box"><svg id="svgLongShort" viewBox="0 0 500 230"></svg></div>
         </div>
 
         <!-- Chart 6: Hour-of-Day P&L Analysis -->
@@ -512,13 +444,13 @@
               <div class="chart-sub">24-Hour session performance (EST)</div>
             </div>
           </div>
-          <div class="svg-box"><svg id="svgHourly" viewBox="0 0 500 240"></svg></div>
+          <div class="svg-box"><svg id="svgHourly" viewBox="0 0 500 230"></svg></div>
         </div>
       </div>
 
-      <!-- Trade Ledger -->
+      <!-- Trade Ledger Table -->
       <div class="ledger-card">
-        <div style="font-size:18px; font-weight:800; margin-bottom:16px;">Trade Ledger (Click row to Audit)</div>
+        <div style="font-size:16px; font-weight:800; margin-bottom:14px;">Trade Ledger (Click any row to audit)</div>
         <table>
           <thead>
             <tr>
@@ -538,151 +470,177 @@
       </div>
     </section>
 
-    <!-- TAB 2: CAPITAL SIMULATOR -->
+    <!-- TAB 2: CAPITAL SIMULATOR (LIVE REAL-TIME REACTIVE) -->
     <section id="tab-simulator" class="page-section">
       <div class="simulator-card">
-        <div style="font-size:22px; font-weight:800; margin-bottom:6px; display:flex; align-items:center; gap:10px;"><svg class="icon icon-md"><use href="#icon-zap"/></svg> Dynamic Capital Simulator & Risk Sizer</div>
-        <div style="font-size:13px; color:var(--text-muted);">Adjust starting capital and risk % to recalculate the entire backtest in real-time.</div>
+        <div style="font-size:18px; font-weight:800; margin-bottom:4px;">Dynamic Capital Simulator & Risk Sizer</div>
+        <div style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">Move the sliders below to recalculate position sizes, cumulative equity, and risk metrics in real-time.</div>
+
+        <!-- Simulator Live Metrics -->
+        <div class="kpi-grid" style="margin-bottom:20px;">
+          <div class="kpi-card" style="background:var(--card-sub);">
+            <div class="kpi-label">Projected Final Balance</div>
+            <div class="kpi-val" id="simLiveEquity">$0.00</div>
+          </div>
+          <div class="kpi-card" style="background:var(--card-sub);">
+            <div class="kpi-label">Net Profit & ROI</div>
+            <div class="kpi-val" id="simLiveProfit">$0.00</div>
+          </div>
+          <div class="kpi-card" style="background:var(--card-sub);">
+            <div class="kpi-label">Simulated Max DD</div>
+            <div class="kpi-val" style="color:var(--red);" id="simLiveDd">-0.0%</div>
+          </div>
+          <div class="kpi-card" style="background:var(--card-sub);">
+            <div class="kpi-label">Average Position Size</div>
+            <div class="kpi-val" id="simLiveLots">1 Lot</div>
+          </div>
+        </div>
 
         <div class="sim-controls">
+          <!-- Starting Capital -->
           <div class="control-box">
             <div class="control-label">
-              <span>Starting Fund ($ USD)</span>
+              <span>Starting Capital ($ USD)</span>
               <span id="simFundLabel" style="color:var(--blue);">$10,000</span>
             </div>
-            <input type="number" id="simFundInput" class="control-input" value="10000" min="1000" max="1000000" step="1000" oninput="onSimParamChange()">
-            <input type="range" id="simFundSlider" class="control-slider" min="1000" max="250000" step="1000" value="10000" oninput="syncFund(this.value)">
+            <input type="number" id="simFundInput" class="control-input" value="10000" min="1000" max="1000000" step="1000" oninput="onFundInputChange(this.value)">
+            <input type="range" id="simFundSlider" class="control-slider" min="1000" max="250000" step="1000" value="10000" oninput="onFundSliderChange(this.value)">
+            <div class="preset-btns">
+              <button class="btn-pill sec sm" onclick="setFundPreset(10000)">$10K</button>
+              <button class="btn-pill sec sm" onclick="setFundPreset(25000)">$25K</button>
+              <button class="btn-pill sec sm" onclick="setFundPreset(50000)">$50K</button>
+              <button class="btn-pill sec sm" onclick="setFundPreset(100000)">$100K</button>
+            </div>
           </div>
 
+          <!-- Risk % -->
           <div class="control-box">
             <div class="control-label">
               <span>Risk Per Trade (% of Balance)</span>
               <span id="simRiskLabel" style="color:var(--green);">1.0%</span>
             </div>
-            <input type="number" id="simRiskInput" class="control-input" value="1.0" min="0.01" max="5.0" step="0.05" oninput="onSimParamChange()">
-            <input type="range" id="simRiskSlider" class="control-slider" min="0.03" max="3.0" step="0.01" value="1.0" oninput="syncRisk(this.value)">
+            <input type="number" id="simRiskInput" class="control-input" value="1.0" min="0.01" max="5.0" step="0.05" oninput="onRiskInputChange(this.value)">
+            <input type="range" id="simRiskSlider" class="control-slider" min="0.03" max="3.0" step="0.01" value="1.0" oninput="onRiskSliderChange(this.value)">
+            <div class="preset-btns">
+              <button class="btn-pill sec sm" onclick="setRiskPreset(0.5)">0.5%</button>
+              <button class="btn-pill sec sm" onclick="setRiskPreset(1.0)">1.0%</button>
+              <button class="btn-pill sec sm" onclick="setRiskPreset(1.5)">1.5%</button>
+              <button class="btn-pill sec sm" onclick="setRiskPreset(2.0)">2.0%</button>
+            </div>
           </div>
         </div>
 
-        <div style="display:flex; gap:12px; flex-wrap:wrap;">
-          <button class="btn-pill" onclick="recalculateSimulation(); switchTab('overview', document.querySelectorAll('.nav-item')[0])"><svg class="icon"><use href="#icon-check-circle"/></svg> Apply & View Overview</button>
-          <button class="btn-pill sec" onclick="resetSimulation()"><svg class="icon"><use href="#icon-rotate-ccw"/></svg> Reset to Defaults</button>
+        <div style="display:flex; gap:10px; margin-top:20px;">
+          <button class="btn-pill" onclick="switchTab('overview', document.querySelectorAll('.nav-item')[0])">View in Overview Tab</button>
+          <button class="btn-pill sec" onclick="resetSimulation()">Reset Defaults</button>
         </div>
       </div>
     </section>
 
-    <!-- TAB 3: STRATEGY RULES & DOCUMENTATION (DETAILED TEXT IN ENGLISH) -->
+    <!-- TAB 3: STRATEGY RULES & DOCUMENTATION (STRUCTURED TEXT IN ENGLISH) -->
     <section id="tab-guide" class="page-section">
       <div class="guide-card">
         
-        <!-- Section 1: Overview -->
         <div class="guide-section">
           <div class="guide-header">1. Multi-Timeframe Strategy Hierarchy</div>
           <div class="guide-body">
-            The strategy operates on a strict multi-timeframe confirmation pipeline to filter market noise and isolate high-probability trend expansions:
+            The strategy operates on a chronological, event-driven confirmation pipeline to isolate genuine institutional trend expansions while avoiding false breakout noise:
             <div class="rule-box">
               <div class="rule-title">Execution Sequence</div>
-              <div class="rule-desc"><strong>1H Completed Reference</strong> → <strong>15M Directional Intent</strong> → <strong>5M Breakdown/Breakout Confirmation</strong> → <strong>1M Entry Execution</strong> → <strong>Dynamic Multi-R Trailing Stop</strong></div>
+              <div class="rule-desc"><strong>1-Hour Completed Reference</strong> → <strong>15-Minute Directional Intent</strong> → <strong>5-Minute Breakdown/Breakout Confirmation</strong> → <strong>1-Minute Entry Execution</strong> → <strong>Dynamic Multi-R Trailing Stop</strong></div>
             </div>
           </div>
         </div>
 
-        <!-- Section 2: 1H Reference -->
         <div class="guide-section">
           <div class="guide-header">2. Step 1: 1-Hour Completed Reference Framework</div>
           <div class="guide-body">
-            <p>At the close of every hourly bar, the engine marks two critical institutional liquidity boundary levels:</p>
+            <p>At the close of every hourly bar, the engine records two benchmark levels:</p>
             <ul style="margin: 8px 0 8px 20px;">
-              <li><strong>Reference High:</strong> The exact high price reached during the completed 1-Hour candle.</li>
-              <li><strong>Reference Low:</strong> The exact low price reached during the completed 1-Hour candle.</li>
+              <li><strong>Reference High:</strong> The exact high reached by the completed 1-Hour candle.</li>
+              <li><strong>Reference Low:</strong> The exact low reached by the completed 1-Hour candle.</li>
             </ul>
-            <p><em>Anti-Lookahead Rule:</em> An incomplete 1H candle is never used. The boundaries become valid only after the exact minute :00 hour close.</p>
+            <p><em>Anti-Lookahead Rule:</em> An incomplete 1H candle is never used. Levels become active strictly after the completed :00 minute mark.</p>
           </div>
         </div>
 
-        <!-- Section 3: 15M Directional Classification -->
         <div class="guide-section">
           <div class="guide-header">3. Step 2: 15-Minute Directional Classification</div>
           <div class="guide-body">
-            After the 1-Hour reference is finalized, subsequent completed 15-Minute bars determine market intent across 4 distinct categories:
+            Subsequent completed 15-Minute bars evaluate price interaction against the 1-Hour reference:
             
-            <div class="rule-box" style="border-left: 4px solid var(--green);">
+            <div class="rule-box" style="border-left: 3px solid var(--green);">
               <div class="rule-title">A. 15M Upside Breakout (LONG Intent)</div>
-              <div class="rule-desc">Condition: <code>15M High > 1H High</code> AND <code>15M Close > 1H High</code>. Confirms buyers have accepted prices above the reference level. Sets a directional plan for LONG.</div>
+              <div class="rule-desc">Condition: <code>15M High > 1H High</code> AND <code>15M Close > 1H High</code>. Buyers accept price above reference level. Sets a LONG plan.</div>
             </div>
 
-            <div class="rule-box" style="border-left: 4px solid var(--red);">
+            <div class="rule-box" style="border-left: 3px solid var(--red);">
               <div class="rule-title">B. 15M Downside Breakout (SHORT Intent)</div>
-              <div class="rule-desc">Condition: <code>15M Low < 1H Low</code> AND <code>15M Close < 1H Low</code>. Confirms sellers have accepted prices below the reference level. Sets a directional plan for SHORT.</div>
+              <div class="rule-desc">Condition: <code>15M Low < 1H Low</code> AND <code>15M Close < 1H Low</code>. Sellers accept price below reference level. Sets a SHORT plan.</div>
             </div>
 
-            <div class="rule-box" style="border-left: 4px solid var(--yellow);">
+            <div class="rule-box" style="border-left: 3px solid var(--yellow);">
               <div class="rule-title">C. 15M Upside Sweep / Liquidity Grab (Potential SHORT Intent)</div>
-              <div class="rule-desc">Condition: <code>15M High > 1H High</code> AND <code>15M Close <= 1H High</code>. Indicates buyer rejection (liquidity sweep). Prepares for a short entry pending downside confirmation.</div>
+              <div class="rule-desc">Condition: <code>15M High > 1H High</code> AND <code>15M Close <= 1H High</code>. Indicates rejection above high. Prepares for Short entry upon downside confirmation.</div>
             </div>
 
-            <div class="rule-box" style="border-left: 4px solid var(--yellow);">
+            <div class="rule-box" style="border-left: 3px solid var(--yellow);">
               <div class="rule-title">D. 15M Downside Sweep / Liquidity Grab (Potential LONG Intent)</div>
-              <div class="rule-desc">Condition: <code>15M Low < 1H Low</code> AND <code>15M Close >= 1H Low</code>. Indicates seller rejection (liquidity sweep). Prepares for a long entry pending upside confirmation.</div>
+              <div class="rule-desc">Condition: <code>15M Low < 1H Low</code> AND <code>15M Close >= 1H Low</code>. Indicates rejection below low. Prepares for Long entry upon upside confirmation.</div>
             </div>
           </div>
         </div>
 
-        <!-- Section 4: 5M Confirmation -->
         <div class="guide-section">
           <div class="guide-header">4. Step 3: 5-Minute Confirmation Protocol</div>
           <div class="guide-body">
-            <p>Once a 15-minute directional plan is established, the engine awaits a completed 5-minute candle to confirm directional continuation past the reference extreme level.</p>
+            <p>Following a 15-minute directional plan, the engine requires a completed 5-minute bar to confirm momentum past the reference extreme level.</p>
             <div class="rule-box">
-              <div class="rule-title">Hard Rule on 5-Minute Sweeps</div>
-              <div class="rule-desc"><strong>5-Minute wicks or sweeps are strictly ignored as independent reversal signals.</strong> Only the 15-Minute timeframe has the authority to dictate directional sweeps or trend changes. The 5-Minute timeframe is used purely for structural confirmation.</div>
+              <div class="rule-title">Hard Rule: 5-Minute Sweeps Ignored</div>
+              <div class="rule-desc"><strong>5-Minute wicks or sweeps are strictly ignored as independent signals.</strong> Only the 15-Minute timeframe determines directional intent. 5-Minute is used exclusively for confirmation.</div>
             </div>
           </div>
         </div>
 
-        <!-- Section 5: 1M Entry & Execution -->
         <div class="guide-section">
           <div class="guide-header">5. Step 4: 1-Minute Entry Execution & Stop Loss</div>
           <div class="guide-body">
             <ul style="margin: 8px 0 8px 20px;">
-              <li><strong>Execution Mode:</strong> Next Bar Open (`next_bar_open`). When 5M confirmation occurs, entry triggers immediately on the opening tick of the subsequent 1-minute candle.</li>
+              <li><strong>Execution Mode:</strong> Next Bar Open (`next_bar_open`). When 5M confirmation occurs, entry executes on the opening tick of the subsequent 1-minute candle.</li>
               <li><strong>Structural Initial Stop Loss:</strong> Placed at the lowest swing point (for Longs) or highest swing point (for Shorts) of the preceding 1-minute structure + 1 buffer tick.</li>
-              <li><strong>Slippage & Cost Model:</strong> Every simulated execution includes realistic slippage and broker commissions deducted directly from gross P&L.</li>
+              <li><strong>Execution Costs:</strong> Slippage and exchange commissions are automatically deducted from net P&L.</li>
             </ul>
           </div>
         </div>
 
-        <!-- Section 6: Dynamic Multi-R Trailing Protocol -->
         <div class="guide-section">
           <div class="guide-header">6. Step 5: Dynamic Multi-R Trailing Stop Protocol</div>
           <div class="guide-body">
-            <p>To eliminate arbitrary profit targets and capture extended runner trends, the strategy enforces strict non-partial multi-R trailing:</p>
+            <p>To capture extended trend legs without premature exits, the strategy applies non-partial dynamic trailing stops:</p>
             
             <div class="rule-box">
               <div class="rule-title">Stage 1 (+1R Milestone)</div>
-              <div class="rule-desc">When price reaches <code>+1R</code> in profit: The Stop Loss is instantly moved to <strong>+1R in Profit</strong>. The position remains 100% open with zero partial profit taken.</div>
+              <div class="rule-desc">When price reaches <code>+1R</code> in profit: Stop Loss is immediately moved to <strong>+1R in Profit</strong>. The position remains 100% open with zero partial exits.</div>
             </div>
 
             <div class="rule-box">
               <div class="rule-title">Stage 2 (+3R Milestone)</div>
-              <div class="rule-desc">When price reaches <code>+3R</code> in profit: The Stop Loss advances to <strong>+3R in Profit</strong>, securing a significant win while letting the trade run.</div>
+              <div class="rule-desc">When price reaches <code>+3R</code> in profit: Stop Loss advances to <strong>+3R in Profit</strong>, locking in gains while letting runners expand.</div>
             </div>
 
             <div class="rule-box">
               <div class="rule-title">Stage 3 (Post +3R Trailing Ladder)</div>
-              <div class="rule-desc">For every subsequent full +1R advancement (4R, 5R, 6R, 7R...): The Stop Loss trails forward by +1R (+4R, +5R, +6R...) until the market reverses into the trailing stop. There is no fixed take profit.</div>
+              <div class="rule-desc">For every subsequent full +1R advancement (4R, 5R, 6R...): Stop Loss trails forward by +1R (+4R, +5R, +6R...) until stopped out. There is no fixed take profit.</div>
             </div>
           </div>
         </div>
 
-        <!-- Section 7: Risk Management & Multi-Trade Lifecycle -->
         <div class="guide-section">
           <div class="guide-header">7. Step 6: Risk Management & Multi-Trade Lifecycle</div>
           <div class="guide-body">
             <ul style="margin: 8px 0 8px 20px;">
-              <li><strong>Dynamic Compounding Position Sizing:</strong> Contract sizing is calculated as a fixed percentage of current total account equity, automatically scaling position sizes as profits grow.</li>
-              <li><strong>Session & Hourly Boundary Survival:</strong> An active trade is never closed merely because a new hour opens or the trading session rolls over. Each trade manages its lifecycle independently until its trailing stop is hit.</li>
-              <li><strong>Concurrent Trade Independence:</strong> If a new valid hourly reference setup triggers while an older trade is still trailing, both trades run simultaneously with independent stop loss and risk tracking.</li>
+              <li><strong>Dynamic Compounding Position Sizing:</strong> Contract size is dynamically calculated as a percentage of current account equity, scaling lot sizes automatically as profits grow.</li>
+              <li><strong>Session & Hourly Boundary Persistence:</strong> Active trades are never prematurely closed due to hourly or session boundaries. Each trade manages its lifecycle independently until stopped out.</li>
             </ul>
           </div>
         </div>
@@ -695,11 +653,11 @@
   <!-- Trade Audit Modal -->
   <div class="modal-overlay" id="auditModal" onclick="closeModal(event)">
     <div class="modal-card" onclick="event.stopPropagation()">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
-        <h3 style="font-size:16px; font-weight:800;" id="modalId">Trade Audit</h3>
-        <span style="cursor:pointer; display:flex;" onclick="closeModal()"><svg class="icon icon-md"><use href="#icon-x"/></svg></span>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+        <h3 style="font-size:15px; font-weight:800;" id="modalId">Trade Audit</h3>
+        <span style="cursor:pointer; font-weight:700; font-size:16px;" onclick="closeModal()">✕</span>
       </div>
-      <div id="modalBody" style="font-size:13px; line-height:1.8; color:var(--text);"></div>
+      <div id="modalBody" style="font-size:13px; line-height:1.7; color:var(--text);"></div>
     </div>
   </div>
 
@@ -754,8 +712,12 @@
     }
     baseTrades = JSON.parse(JSON.stringify(rawData.trades || []));
     simStartingFund = (rawData.meta && (rawData.meta.initial_balance || rawData.meta.initial_capital)) || 10000;
+    
     document.getElementById('simFundInput').value = simStartingFund;
     document.getElementById('simFundSlider').value = simStartingFund;
+    document.getElementById('simRiskInput').value = simRiskPercent;
+    document.getElementById('simRiskSlider').value = simRiskPercent;
+    
     recalculateSimulation();
   }
 
@@ -766,43 +728,79 @@
     if (el) el.classList.add('active');
   }
 
-  function syncFund(val) {
+  // --- Real-time Simulator Control Event Handlers ---
+  function onFundSliderChange(val) {
+    simStartingFund = parseFloat(val) || 10000;
+    document.getElementById('simFundInput').value = simStartingFund;
+    document.getElementById('simFundLabel').innerText = `$${simStartingFund.toLocaleString()}`;
+    recalculateSimulation();
+  }
+  function onFundInputChange(val) {
+    simStartingFund = parseFloat(val) || 10000;
+    document.getElementById('simFundSlider').value = simStartingFund;
+    document.getElementById('simFundLabel').innerText = `$${simStartingFund.toLocaleString()}`;
+    recalculateSimulation();
+  }
+  function setFundPreset(val) {
+    simStartingFund = val;
     document.getElementById('simFundInput').value = val;
-    onSimParamChange();
+    document.getElementById('simFundSlider').value = val;
+    document.getElementById('simFundLabel').innerText = `$${val.toLocaleString()}`;
+    recalculateSimulation();
   }
-  function syncRisk(val) {
+
+  function onRiskSliderChange(val) {
+    simRiskPercent = parseFloat(val) || 1.0;
+    document.getElementById('simRiskInput').value = simRiskPercent;
+    document.getElementById('simRiskLabel').innerText = `${simRiskPercent.toFixed(2)}%`;
+    recalculateSimulation();
+  }
+  function onRiskInputChange(val) {
+    simRiskPercent = parseFloat(val) || 1.0;
+    document.getElementById('simRiskSlider').value = simRiskPercent;
+    document.getElementById('simRiskLabel').innerText = `${simRiskPercent.toFixed(2)}%`;
+    recalculateSimulation();
+  }
+  function setRiskPreset(val) {
+    simRiskPercent = val;
     document.getElementById('simRiskInput').value = val;
-    onSimParamChange();
-  }
-  function onSimParamChange() {
-    const f = parseFloat(document.getElementById('simFundInput').value) || 10000;
-    const r = parseFloat(document.getElementById('simRiskInput').value) || 1.0;
-    document.getElementById('simFundLabel').innerText = `$${f.toLocaleString()}`;
-    document.getElementById('simRiskLabel').innerText = `${r.toFixed(2)}%`;
+    document.getElementById('simRiskSlider').value = val;
+    document.getElementById('simRiskLabel').innerText = `${val.toFixed(2)}%`;
+    recalculateSimulation();
   }
 
+  function resetSimulation() {
+    setFundPreset(10000);
+    setRiskPreset(1.0);
+  }
+
+  // --- Core Dynamic What-If Math Engine ---
   function recalculateSimulation() {
-    simStartingFund = parseFloat(document.getElementById('simFundInput').value) || 10000;
-    simRiskPercent = parseFloat(document.getElementById('simRiskInput').value) || 1.0;
-
     let runningEquity = simStartingFund;
     let peakEquity = runningEquity;
     let maxDdDollars = 0;
     let maxDdPct = 0;
+    let totalLotsTraded = 0;
     const equityCurve = [{ eq: runningEquity, time: 'Start', pnl: 0 }];
     const pointValue = 2.0;
 
     simTrades = baseTrades.map(t => {
       const clone = { ...t };
-      const riskPoints = clone.initial_risk || (Math.abs(clone.entry_price - (clone.initial_sl || clone.entry_price - 10))) || 10;
-      
+      const entryP = parseFloat(clone.entry_price) || 0;
+      const initialSl = parseFloat(clone.initial_sl) || (entryP > 0 ? (clone.direction === 'LONG' ? entryP - 10 : entryP + 10) : 0);
+      let riskPoints = parseFloat(clone.initial_risk) || Math.abs(entryP - initialSl);
+      if (!riskPoints || riskPoints <= 0) riskPoints = 10.0;
+
+      // Dynamic Lot Sizing
       const riskMoney = runningEquity * (simRiskPercent / 100.0);
       const riskPerContract = riskPoints * pointValue;
       const contracts = Math.max(1, Math.floor(riskMoney / (riskPerContract || 20)));
       clone.contracts = contracts;
+      totalLotsTraded += contracts;
 
-      const pnlPoints = (clone.r_multiple || 0) * riskPoints;
-      const netPnl = pnlPoints * pointValue * contracts - (1.24 * contracts);
+      const rMult = parseFloat(clone.r_multiple) || 0;
+      const pointsGained = rMult * riskPoints;
+      const netPnl = (pointsGained * pointValue * contracts) - (1.24 * contracts);
       clone.net_pnl = Math.round(netPnl * 100) / 100;
 
       runningEquity += clone.net_pnl;
@@ -822,7 +820,9 @@
     const wins = simTrades.filter(t => t.net_pnl > 0).length;
     const losses = simTrades.filter(t => t.net_pnl <= 0).length;
     const winRate = simTrades.length ? ((wins / simTrades.length) * 100).toFixed(1) : 0;
+    const avgLots = simTrades.length ? (totalLotsTraded / simTrades.length).toFixed(1) : 1;
 
+    // Update Overview & Simulator Header Elements
     document.getElementById('heroStartingFund').innerText = `$${simStartingFund.toLocaleString('en-US', {minimumFractionDigits:2})} USD`;
     document.getElementById('heroCurrentEquity').innerText = `$${runningEquity.toLocaleString('en-US', {minimumFractionDigits:2})}`;
     document.getElementById('heroNetPnl').innerText = `${netProfit >= 0 ? '+' : ''}$${netProfit.toLocaleString('en-US', {minimumFractionDigits:2})}`;
@@ -830,6 +830,12 @@
     const pill = document.getElementById('heroProfitPill');
     pill.className = `profit-pill ${netProfit >= 0 ? 'win' : 'loss'}`;
     pill.innerText = `${netProfit >= 0 ? '+' : ''}$${netProfit.toFixed(2)} (${netProfit >= 0 ? '+' : ''}${returnPct.toFixed(2)}%)`;
+
+    // Live Simulator Tab Cards
+    document.getElementById('simLiveEquity').innerText = `$${runningEquity.toLocaleString('en-US', {minimumFractionDigits:2})}`;
+    document.getElementById('simLiveProfit').innerText = `${netProfit >= 0 ? '+' : ''}$${netProfit.toLocaleString('en-US', {minimumFractionDigits:2})} (${returnPct.toFixed(1)}%)`;
+    document.getElementById('simLiveDd').innerText = `-${maxDdPct.toFixed(2)}% ($${Math.round(maxDdDollars)})`;
+    document.getElementById('simLiveLots').innerText = `${avgLots} Lots avg`;
 
     document.getElementById('valWinRate').innerText = `${winRate}%`;
     document.getElementById('valWinLossCount').innerText = `${wins}W / ${losses}L`;
@@ -873,15 +879,6 @@
     renderLedger(simTrades);
   }
 
-  function resetSimulation() {
-    document.getElementById('simFundInput').value = 10000;
-    document.getElementById('simFundSlider').value = 10000;
-    document.getElementById('simRiskInput').value = 1.0;
-    document.getElementById('simRiskSlider').value = 1.0;
-    onSimParamChange();
-    recalculateSimulation();
-  }
-
   function setTradeBarsZoom(limit, btn) {
     tradeBarsZoomLimit = limit;
     if (btn) {
@@ -891,7 +888,7 @@
     renderTradeBarsChart(simTrades);
   }
 
-  // Calendar
+  // --- Calendar ---
   function renderCalendar(trades) {
     const grid = document.getElementById('calGrid');
     const year = currentCalDate.getFullYear();
@@ -939,11 +936,11 @@
     renderCalendar(simTrades);
   }
 
-  // Charts
+  // --- Interactive Equity Curve ---
   function renderEquityChart(points) {
     const svg = document.getElementById('svgEquity');
     if (!points || points.length < 2) return;
-    const w = 500, h = 240, p = 24;
+    const w = 500, h = 230, p = 20;
     const eqVals = points.map(x => x.eq);
     const min = Math.min(...eqVals), max = Math.max(...eqVals);
     const range = max - min || 1;
@@ -959,20 +956,21 @@
     coords.forEach((c, idx) => {
       if (coords.length > 80 && idx % Math.ceil(coords.length / 50) !== 0) return;
       const tip = `Trade #${c.i}<br>Equity: $${Math.round(c.pt.eq).toLocaleString()}<br>Change: ${c.pt.pnl >= 0 ? '+' : ''}$${c.pt.pnl}`;
-      dotsHtml += `<circle cx="${c.x}" cy="${c.y}" r="4" fill="#10B981" opacity="0.6" style="cursor:pointer;" onmousemove="showTooltip(event, '${tip}')" onmouseleave="hideTooltip()"/>`;
+      dotsHtml += `<circle cx="${c.x}" cy="${c.y}" r="3.5" fill="#10B981" opacity="0.6" style="cursor:pointer;" onmousemove="showTooltip(event, '${tip}')" onmouseleave="hideTooltip()"/>`;
     });
 
     svg.innerHTML = `
       <defs>
-        <linearGradient id="eqGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#10B981" stop-opacity="0.25"/><stop offset="100%" stop-color="#10B981" stop-opacity="0.0"/></linearGradient>
+        <linearGradient id="eqGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#10B981" stop-opacity="0.2"/><stop offset="100%" stop-color="#10B981" stop-opacity="0.0"/></linearGradient>
       </defs>
       <line x1="${p}" y1="${h-p}" x2="${w-p}" y2="${h-p}" stroke="#E2E8F0"/>
       <polygon points="${ptsStr} ${w-p},${h-p} ${p},${h-p}" fill="url(#eqGrad)"/>
-      <polyline points="${ptsStr}" fill="none" stroke="#10B981" stroke-width="2.5"/>
+      <polyline points="${ptsStr}" fill="none" stroke="#10B981" stroke-width="2"/>
       ${dotsHtml}
     `;
   }
 
+  // --- Trade-by-Trade Performance ---
   function renderTradeBarsChart(trades) {
     const svg = document.getElementById('svgTradeBars');
     let displayedTrades = trades;
@@ -981,10 +979,10 @@
     }
     if (!displayedTrades.length) return;
 
-    const w = 500, h = 240, p = 24, zeroY = h / 2;
+    const w = 500, h = 230, p = 20, zeroY = h / 2;
     const rVals = displayedTrades.map(t => t.r_multiple || 0);
     const maxR = Math.max(3, ...rVals.map(Math.abs));
-    const barWidth = Math.max(4, (w - p * 2) / displayedTrades.length - 2);
+    const barWidth = Math.max(3.5, (w - p * 2) / displayedTrades.length - 2);
 
     let bars = `<line x1="${p}" y1="${zeroY}" x2="${w-p}" y2="${zeroY}" stroke="#94A3B8" stroke-dasharray="3,3"/>`;
     displayedTrades.forEach((t, i) => {
@@ -1002,6 +1000,7 @@
     svg.innerHTML = bars;
   }
 
+  // --- Donut Charts ---
   function renderOutcomeDonut(trades) {
     const wins = trades.filter(t => (t.r_multiple || 0) > 0.2).length;
     const losses = trades.filter(t => (t.r_multiple || 0) < -0.2).length;
@@ -1022,7 +1021,7 @@
   function drawDonut(svgId, items) {
     const svg = document.getElementById(svgId);
     const total = items.reduce((acc, x) => acc + x.val, 0) || 1;
-    let cum = 0, paths = '', r = 70, cx = 120, cy = 120;
+    let cum = 0, paths = '', r = 66, cx = 120, cy = 115;
 
     items.forEach(it => {
       const frac = it.val / total;
@@ -1032,11 +1031,12 @@
       const tip = `${it.label}: ${it.val} trades (${pct}%)`;
 
       paths += `<path d="M ${cx + r * Math.sin(a1)} ${cy - r * Math.cos(a1)} A ${r} ${r} 0 ${frac > 0.5 ? 1 : 0} 1 ${cx + r * Math.sin(a2)} ${cy - r * Math.cos(a2)}"
-                     fill="none" stroke="${it.color}" stroke-width="26" style="cursor:pointer;" onmousemove="showTooltip(event, '${tip}')" onmouseleave="hideTooltip()"/>`;
+                     fill="none" stroke="${it.color}" stroke-width="24" style="cursor:pointer;" onmousemove="showTooltip(event, '${tip}')" onmouseleave="hideTooltip()"/>`;
     });
-    svg.innerHTML = `${paths}<text x="${cx}" y="${cy+6}" text-anchor="middle" font-size="18" font-weight="800" fill="#0F172A">${total}</text>`;
+    svg.innerHTML = `${paths}<text x="${cx}" y="${cy+5}" text-anchor="middle" font-size="16" font-weight="800" fill="#0F172A">${total}</text>`;
   }
 
+  // --- Long vs Short ---
   function renderLongShortChart(trades) {
     const svg = document.getElementById('svgLongShort');
     const longs = trades.filter(t => t.direction === 'LONG');
@@ -1045,7 +1045,7 @@
     const shortPnl = shorts.reduce((acc, t) => acc + (t.net_pnl || 0), 0);
 
     const maxVal = Math.max(100, Math.abs(longPnl), Math.abs(shortPnl));
-    const zeroY = 140, lH = (Math.abs(longPnl) / maxVal) * 80, sH = (Math.abs(shortPnl) / maxVal) * 80;
+    const zeroY = 130, lH = (Math.abs(longPnl) / maxVal) * 70, sH = (Math.abs(shortPnl) / maxVal) * 70;
 
     const tipL = `BUY (LONG)<br>Net PnL: $${Math.round(longPnl)}<br>Trades: ${longs.length}`;
     const tipS = `SELL (SHORT)<br>Net PnL: $${Math.round(shortPnl)}<br>Trades: ${shorts.length}`;
@@ -1054,16 +1054,17 @@
       <line x1="40" y1="${zeroY}" x2="460" y2="${zeroY}" stroke="#E2E8F0"/>
       <rect x="130" y="${longPnl >= 0 ? zeroY - lH : zeroY}" width="70" height="${Math.max(4, lH)}" fill="${longPnl >= 0 ? '#10B981' : '#EF4444'}" rx="4"
             style="cursor:pointer;" onmousemove="showTooltip(event, '${tipL}')" onmouseleave="hideTooltip()"/>
-      <text x="165" y="${zeroY + 22}" text-anchor="middle" font-size="12" font-weight="700">BUY (LONG)</text>
-      <text x="165" y="${longPnl >= 0 ? zeroY - lH - 8 : zeroY + lH + 16}" text-anchor="middle" font-size="13" font-weight="800">$${Math.round(longPnl)}</text>
+      <text x="165" y="${zeroY + 20}" text-anchor="middle" font-size="11" font-weight="700">BUY (LONG)</text>
+      <text x="165" y="${longPnl >= 0 ? zeroY - lH - 6 : zeroY + lH + 15}" text-anchor="middle" font-size="12" font-weight="800">$${Math.round(longPnl)}</text>
 
       <rect x="300" y="${shortPnl >= 0 ? zeroY - sH : zeroY}" width="70" height="${Math.max(4, sH)}" fill="${shortPnl >= 0 ? '#10B981' : '#EF4444'}" rx="4"
             style="cursor:pointer;" onmousemove="showTooltip(event, '${tipS}')" onmouseleave="hideTooltip()"/>
-      <text x="335" y="${zeroY + 22}" text-anchor="middle" font-size="12" font-weight="700">SELL (SHORT)</text>
-      <text x="335" y="${shortPnl >= 0 ? zeroY - sH - 8 : zeroY + sH + 16}" text-anchor="middle" font-size="13" font-weight="800">$${Math.round(shortPnl)}</text>
+      <text x="335" y="${zeroY + 20}" text-anchor="middle" font-size="11" font-weight="700">SELL (SHORT)</text>
+      <text x="335" y="${shortPnl >= 0 ? zeroY - sH - 6 : zeroY + sH + 15}" text-anchor="middle" font-size="12" font-weight="800">$${Math.round(shortPnl)}</text>
     `;
   }
 
+  // --- Hourly P&L ---
   function renderHourlyChart(trades) {
     const svg = document.getElementById('svgHourly');
     const hourMap = Array(24).fill(0);
@@ -1078,7 +1079,7 @@
     });
 
     const maxPnl = Math.max(50, ...hourMap.map(Math.abs));
-    const w = 500, h = 240, p = 24, zeroY = h / 2, barW = (w - p * 2) / 24 - 3;
+    const w = 500, h = 230, p = 20, zeroY = h / 2, barW = (w - p * 2) / 24 - 3;
     let out = `<line x1="${p}" y1="${zeroY}" x2="${w-p}" y2="${zeroY}" stroke="#CBD5E1"/>`;
 
     hourMap.forEach((pnl, hr) => {
@@ -1087,12 +1088,13 @@
       out += `
         <rect x="${p + hr * ((w - p * 2) / 24)}" y="${pnl >= 0 ? zeroY - bH : zeroY}" width="${barW}" height="${Math.max(2, bH)}" fill="${pnl >= 0 ? '#10B981' : '#EF4444'}" rx="1"
               style="cursor:pointer;" onmousemove="showTooltip(event, '${tip}')" onmouseleave="hideTooltip()"/>
-        ${hr % 4 === 0 ? `<text x="${p + hr * ((w - p * 2) / 24) + barW/2}" y="${h-4}" font-size="9" text-anchor="middle" fill="#94A3B8">${hr}h</text>` : ''}
+        ${hr % 4 === 0 ? `<text x="${p + hr * ((w - p * 2) / 24) + barW/2}" y="${h-2}" font-size="9" text-anchor="middle" fill="#94A3B8">${hr}h</text>` : ''}
       `;
     });
     svg.innerHTML = out;
   }
 
+  // --- Ledger Table ---
   function renderLedger(trades) {
     const tbody = document.getElementById('ledgerBody');
     tbody.innerHTML = trades.slice(0, 50).map(t => {
@@ -1102,7 +1104,7 @@
           <td><strong>${t.trade_id}</strong></td>
           <td><span class="badge ${t.direction === 'LONG' ? 'long' : 'short'}">${t.direction}</span></td>
           <td style="color:var(--text-muted);">${t.setup_type || '-'}</td>
-          <td style="font-size:12px;">${nyDate ? nyDate.formattedTime : t.entry_time}</td>
+          <td style="font-size:11px;">${nyDate ? nyDate.formattedTime : t.entry_time}</td>
           <td><strong>${t.contracts || 1}</strong></td>
           <td>$${t.entry_price || 0}</td>
           <td>$${t.exit_price || '-'}</td>
@@ -1120,9 +1122,9 @@
 
     document.getElementById('modalId').innerText = `Trade Audit: ${t.trade_id}`;
     document.getElementById('modalBody').innerHTML = `
-      <p><strong>Setup Type:</strong> ${t.setup_type}</p>
+      <p><strong>Setup:</strong> ${t.setup_type}</p>
       <p><strong>Direction:</strong> ${t.direction}</p>
-      <p><strong>Position Size:</strong> ${t.contracts || 1} Contracts</p>
+      <p><strong>Lots:</strong> ${t.contracts || 1} Contracts</p>
       <p><strong>Entry (EST):</strong> $${t.entry_price} (${nyEntry ? nyEntry.formattedTime : t.entry_time})</p>
       <p><strong>Exit (EST):</strong> $${t.exit_price || '-'} (${nyExit ? nyExit.formattedTime : t.exit_time || '-'})</p>
       <p><strong>R-Multiple:</strong> ${t.r_multiple}R</p>
