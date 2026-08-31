@@ -8,12 +8,12 @@ on:
         required: true
         type: choice
         options:
-          - "NQ=F"  # E-mini NASDAQ 100 Futures (Real)
-          - "QQQ"   # Invesco NASDAQ 100 ETF (Real)
-          - "MNQ=F" # Micro E-mini NASDAQ Futures (Real)
+          - "NQ=F"
+          - "QQQ"
+          - "MNQ=F"
         default: "NQ=F"
       days_to_fetch:
-        description: "Days of Real 1-Minute Data (Max 28)"
+        description: "Days of Real 1-Minute Data"
         required: true
         default: "28"
 
@@ -42,11 +42,11 @@ jobs:
       - name: Install Dependencies
         run: |
           pip install --upgrade pip
-          pip install pandas numpy pyarrow fastparquet pydantic pyyaml click plotly jinja2 tabulate yfinance requests
+          pip install -r requirements.txt
 
-      - name: Download Real 1-Minute Historical Market Data
+      - name: Fetch Real 1M Data
         run: |
-          mkdir -p data/processed results
+          mkdir -p data/processed dashboard results
           python -c "
           from src.data_fetcher import FreeDataFetcher
           FreeDataFetcher.fetch_real_30d_1m(
@@ -56,31 +56,27 @@ jobs:
           )
           "
 
-      - name: Validate Real Market Data
+      - name: Validate Data
         run: |
           python main.py validate-data --data data/processed/MNQ_1m.parquet --report-out results/data_quality.json
 
-      - name: Execute Multi-Timeframe Backtest
+      - name: Run Engine & Export dashboard/data.json
         run: |
           python main.py backtest --data data/processed/MNQ_1m.parquet --config config/strategy.yaml --output-dir results/
 
-      - name: Prepare Live GitHub Pages
-        run: |
-          cp results/report.html results/index.html
-
-      - name: Upload Artifacts (Downloadable ZIP)
+      - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: real-data-backtest-report-${{ github.run_id }}
+          name: backtest-data-${{ github.run_id }}
           path: results/
 
-      - name: Configure GitHub Pages
+      - name: Setup GitHub Pages
         uses: actions/configure-pages@v4
 
-      - name: Upload Pages Artifact
+      - name: Upload Pages Artifact (From dashboard/ folder)
         uses: actions/upload-pages-artifact@v3
         with:
-          path: "results/"
+          path: "dashboard/"
 
   deploy-pages:
     needs: run-backtest
