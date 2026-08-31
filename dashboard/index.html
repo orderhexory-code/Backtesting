@@ -87,7 +87,10 @@
     }
     .nav-item:hover { background: var(--card-sub); color: var(--text); }
     .nav-item.active { background: #0F172A; color: #FFFFFF; }
-    .nav-icon { font-size: 16px; }
+    .nav-icon { width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .nav-icon svg { width: 18px; height: 18px; }
+    .icon { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+    .icon.icon-md { width: 18px; height: 18px; }
 
     .sidebar-footer {
       padding: 14px;
@@ -106,16 +109,41 @@
       padding: 28px 24px;
       max-width: 1400px;
     }
+    /* Mobile top bar (hidden on desktop) */
+    .mobile-topbar {
+      display: none;
+      position: fixed; top: 0; left: 0; right: 0; z-index: 60;
+      align-items: center; gap: 10px;
+      padding: 14px 18px;
+      background: var(--sidebar-bg);
+      border-bottom: 1px solid var(--border);
+    }
+    .mobile-topbar .brand-avatar { width: 30px; height: 30px; font-size: 12px; }
+    .mobile-topbar .brand-title { font-size: 14px; }
+
     @media (max-width: 900px) {
       body { flex-direction: column; }
+      .mobile-topbar { display: flex; }
       .sidebar {
-        position: relative; width: 100%; height: auto;
-        border-right: none; border-bottom: 1px solid var(--border);
-        flex-direction: row; align-items: center; padding: 16px;
+        position: fixed; width: 100%; height: auto;
+        top: auto; bottom: 0; left: 0; right: 0;
+        border-right: none; border-top: 1px solid var(--border);
+        flex-direction: row; align-items: stretch; padding: 6px 4px;
+        padding-bottom: max(6px, env(safe-area-inset-bottom));
+        box-shadow: 0 -4px 16px rgba(15, 23, 42, 0.06);
       }
-      .brand-wrap { margin-bottom: 0; }
+      .sidebar > div:first-child { display: contents; }
+      .brand-wrap { display: none; }
       .sidebar-footer { display: none; }
-      .main-wrapper { margin-left: 0; padding: 16px; }
+      .nav-list { flex-direction: row; width: 100%; justify-content: space-around; gap: 2px; }
+      .nav-item {
+        flex-direction: column; gap: 3px; padding: 8px 10px;
+        border-radius: var(--radius-md); font-size: 10px; flex: 1;
+        justify-content: center; text-align: center;
+      }
+      .nav-icon { width: 20px; height: 20px; margin: 0 auto; }
+      .nav-icon svg { width: 20px; height: 20px; }
+      .main-wrapper { margin-left: 0; padding: 76px 16px 92px; }
     }
 
     .page-section { display: none; }
@@ -290,6 +318,45 @@
   <!-- Floating Global Tooltip -->
   <div id="chartTooltip"></div>
 
+  <!-- SVG Icon Sprite -->
+  <svg width="0" height="0" style="position:absolute;">
+    <defs>
+      <symbol id="icon-overview" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
+      </symbol>
+      <symbol id="icon-zap" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+      </symbol>
+      <symbol id="icon-book" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+      </symbol>
+      <symbol id="icon-download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+      </symbol>
+      <symbol id="icon-chevron-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="15 18 9 12 15 6"/>
+      </symbol>
+      <symbol id="icon-chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="9 18 15 12 9 6"/>
+      </symbol>
+      <symbol id="icon-rotate-ccw" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/>
+      </symbol>
+      <symbol id="icon-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+      </symbol>
+      <symbol id="icon-check-circle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
+      </symbol>
+    </defs>
+  </svg>
+
+  <!-- Mobile Top Bar -->
+  <div class="mobile-topbar">
+    <div class="brand-avatar">NQ</div>
+    <div class="brand-title">NASDAQ Hub</div>
+  </div>
+
   <!-- Left Sidebar Navigation -->
   <aside class="sidebar">
     <div>
@@ -302,13 +369,13 @@
       </div>
       <ul class="nav-list">
         <li class="nav-item active" onclick="switchTab('overview', this)">
-          <span class="nav-icon">📊</span> Overview
+          <span class="nav-icon"><svg class="icon icon-md"><use href="#icon-overview"/></svg></span> Overview
         </li>
         <li class="nav-item" onclick="switchTab('simulator', this)">
-          <span class="nav-icon">⚡</span> Capital Simulator
+          <span class="nav-icon"><svg class="icon icon-md"><use href="#icon-zap"/></svg></span> Capital Simulator
         </li>
         <li class="nav-item" onclick="switchTab('guide', this)">
-          <span class="nav-icon">📖</span> Strategy Guide
+          <span class="nav-icon"><svg class="icon icon-md"><use href="#icon-book"/></svg></span> Strategy Guide
         </li>
       </ul>
     </div>
@@ -339,7 +406,7 @@
           </div>
         </div>
         <div>
-          <a class="btn-pill" id="csvDownloadBtn" href="trades.csv" download>↓ Export CSV</a>
+          <button class="btn-pill" id="csvDownloadBtn" onclick="exportCSV()"><svg class="icon"><use href="#icon-download"/></svg> Export CSV</button>
         </div>
       </div>
 
@@ -377,9 +444,9 @@
         <div class="cal-header">
           <div style="font-size:18px; font-weight:800;">P&L Calendar (New York Time)</div>
           <div style="display:flex; align-items:center; gap:8px;">
-            <button onclick="changeMonth(-1)" class="btn-pill sec sm">‹ Prev</button>
+            <button onclick="changeMonth(-1)" class="btn-pill sec sm"><svg class="icon"><use href="#icon-chevron-left"/></svg> Prev</button>
             <span id="calMonthDisplay" style="font-weight:700; min-width:130px; text-align:center;">Month</span>
-            <button onclick="changeMonth(1)" class="btn-pill sec sm">Next ›</button>
+            <button onclick="changeMonth(1)" class="btn-pill sec sm">Next <svg class="icon"><use href="#icon-chevron-right"/></svg></button>
           </div>
         </div>
         <div class="cal-grid" id="calGrid"></div>
@@ -406,7 +473,7 @@
               <div class="chart-sub">Sequential R-Multiples</div>
             </div>
             <div style="display:flex; gap:6px;">
-              <button class="btn-pill sec sm" onclick="setTradeBarsZoom(30, this)">Last 30</button>
+              <button class="btn-pill sm" onclick="setTradeBarsZoom(30, this)">Last 30</button>
               <button class="btn-pill sec sm" onclick="setTradeBarsZoom(60, this)">Last 60</button>
               <button class="btn-pill sec sm" onclick="setTradeBarsZoom(0, this)">All</button>
             </div>
@@ -484,7 +551,7 @@
     <!-- TAB 2: CAPITAL SIMULATOR -->
     <section id="tab-simulator" class="page-section">
       <div class="simulator-card">
-        <div style="font-size:22px; font-weight:800; margin-bottom:6px;">⚡ Dynamic Capital Simulator & Risk Sizer</div>
+        <div style="font-size:22px; font-weight:800; margin-bottom:6px; display:flex; align-items:center; gap:10px;"><svg class="icon icon-md"><use href="#icon-zap"/></svg> Dynamic Capital Simulator & Risk Sizer</div>
         <div style="font-size:13px; color:var(--text-muted);">Adjust starting capital and risk % to recalculate the entire backtest in real-time.</div>
 
         <div class="sim-controls">
@@ -508,8 +575,8 @@
         </div>
 
         <div style="display:flex; gap:12px; flex-wrap:wrap;">
-          <button class="btn-pill" onclick="recalculateSimulation(); switchTab('overview', document.querySelector('.nav-item'))">⚡ Apply & View Overview</button>
-          <button class="btn-pill sec" onclick="resetSimulation()">↺ Reset to Defaults</button>
+          <button class="btn-pill" onclick="recalculateSimulation(); switchTab('overview', document.querySelectorAll('.nav-item')[0])"><svg class="icon"><use href="#icon-check-circle"/></svg> Apply & View Overview</button>
+          <button class="btn-pill sec" onclick="resetSimulation()"><svg class="icon"><use href="#icon-rotate-ccw"/></svg> Reset to Defaults</button>
         </div>
       </div>
     </section>
@@ -628,7 +695,7 @@
     <div class="modal-card" onclick="event.stopPropagation()">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
         <h3 style="font-size:16px; font-weight:800;" id="modalId">Trade Audit</h3>
-        <span style="cursor:pointer; font-weight:700;" onclick="closeModal()">✕</span>
+        <span style="cursor:pointer; display:flex;" onclick="closeModal()"><svg class="icon icon-md"><use href="#icon-x"/></svg></span>
       </div>
       <div id="modalBody" style="font-size:13px; line-height:1.8; color:var(--text);"></div>
     </div>
@@ -768,6 +835,36 @@
     document.getElementById('valMaxDdDollars').innerText = `-$${maxDdDollars.toFixed(2)}`;
     document.getElementById('valTotalTrades').innerText = simTrades.length;
 
+    // Profit Factor = gross profit / gross loss
+    const grossProfit = simTrades.filter(t => t.net_pnl > 0).reduce((a, t) => a + t.net_pnl, 0);
+    const grossLoss = Math.abs(simTrades.filter(t => t.net_pnl < 0).reduce((a, t) => a + t.net_pnl, 0));
+    const profitFactor = grossLoss > 0 ? (grossProfit / grossLoss) : (grossProfit > 0 ? Infinity : 0);
+    document.getElementById('valProfitFactor').innerText = isFinite(profitFactor) ? profitFactor.toFixed(2) : '∞';
+
+    // Expectancy (R) = average R-multiple across trades
+    const rVals = simTrades.map(t => t.r_multiple || 0);
+    const expectancyR = rVals.length ? (rVals.reduce((a, b) => a + b, 0) / rVals.length) : 0;
+    const expEl = document.getElementById('valExpectancy');
+    expEl.innerText = `${expectancyR >= 0 ? '+' : ''}${expectancyR.toFixed(2)}R`;
+    expEl.style.color = expectancyR >= 0 ? 'var(--green)' : 'var(--red)';
+
+    // Sharpe ratio (per-trade returns, not annualized)
+    const pnlVals = simTrades.map(t => t.net_pnl || 0);
+    const meanPnl = pnlVals.length ? pnlVals.reduce((a, b) => a + b, 0) / pnlVals.length : 0;
+    const variance = pnlVals.length ? pnlVals.reduce((a, b) => a + Math.pow(b - meanPnl, 2), 0) / pnlVals.length : 0;
+    const stdDev = Math.sqrt(variance);
+    const sharpe = stdDev > 0 ? (meanPnl / stdDev) * Math.sqrt(pnlVals.length) : 0;
+    document.getElementById('valSharpe').innerText = `Sharpe: ${sharpe.toFixed(2)}`;
+
+    // Avg Holding Time (minutes)
+    const holdMinutes = simTrades.map(t => {
+      const entry = new Date(t.entry_time), exit = new Date(t.exit_time || t.entry_time);
+      const diff = (exit - entry) / 60000;
+      return isFinite(diff) && diff >= 0 ? diff : null;
+    }).filter(v => v !== null);
+    const avgHold = holdMinutes.length ? (holdMinutes.reduce((a, b) => a + b, 0) / holdMinutes.length) : (rawData?.metrics?.avg_holding_minutes || 0);
+    document.getElementById('valAvgHold').innerText = `${avgHold.toFixed(1)}m Hold`;
+
     renderCalendar(simTrades);
     renderEquityChart(equityCurve);
     renderTradeBarsChart(simTrades);
@@ -789,8 +886,10 @@
 
   function setTradeBarsZoom(limit, btn) {
     tradeBarsZoomLimit = limit;
-    document.querySelectorAll('.chart-card button').forEach(b => b.classList.add('sec'));
-    if (btn) btn.classList.remove('sec');
+    if (btn) {
+      btn.closest('.chart-header-row').querySelectorAll('button').forEach(b => b.classList.add('sec'));
+      btn.classList.remove('sec');
+    }
     renderTradeBarsChart(simTrades);
   }
 
@@ -1042,6 +1141,25 @@
 
   function closeModal() {
     document.getElementById('auditModal').style.display = 'none';
+  }
+
+  function exportCSV() {
+    if (!simTrades.length) return;
+    const headers = ['trade_id', 'direction', 'setup_type', 'entry_time', 'exit_time', 'contracts', 'entry_price', 'exit_price', 'r_multiple', 'net_pnl', 'exit_reason'];
+    const rows = simTrades.map(t => headers.map(h => {
+      const v = t[h] === undefined || t[h] === null ? '' : t[h];
+      return typeof v === 'string' && v.includes(',') ? `"${v}"` : v;
+    }).join(','));
+    const csv = [headers.join(','), ...rows].join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `trades_${simStartingFund}_${simRiskPercent}pct.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   }
 
   function getFallbackData() {
