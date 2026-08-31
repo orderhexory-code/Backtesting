@@ -3,768 +3,765 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NASDAQ Strategy Dashboard</title>
+  <title>NASDAQ Backtest Performance Dashboard</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #F2F4F7;
-      --card-bg: #FFFFFF;
-      --card-sub: #F8F9FB;
-      --border: #EAECF0;
-      --text-main: #0F172A;
+      --bg: #F8FAFC;
+      --card: #FFFFFF;
+      --card-sub: #F1F5F9;
+      --border: #E2E8F0;
+      --text: #0F172A;
       --text-muted: #64748B;
-      --text-sub: #94A3B8;
-      --black-btn: #0F172A;
-      --black-btn-hover: #1E293B;
-      --cyan-accent: #0284C7;
+      --text-light: #94A3B8;
+      --btn-black: #0F172A;
+      --btn-black-hover: #1E293B;
       --green: #10B981;
       --green-bg: #ECFDF5;
-      --red: #F43F5E;
-      --red-bg: #FFF1F2;
-      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
-      --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.06);
-      --radius-lg: 24px;
-      --radius-md: 16px;
+      --green-text: #047857;
+      --red: #EF4444;
+      --red-bg: #FEF2F2;
+      --red-text: #B91C1C;
+      --yellow: #F59E0B;
+      --yellow-bg: #FFFBEB;
+      --yellow-text: #B45309;
+      --blue: #0EA5E9;
+      --blue-bg: #F0F9FF;
+      --radius-lg: 20px;
+      --radius-md: 14px;
       --radius-pill: 9999px;
+      --shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05);
+      --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.06);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: 'Plus Jakarta Sans', sans-serif;
       background: var(--bg);
-      color: var(--text-main);
+      color: var(--text);
       padding: 24px 16px;
       min-height: 100vh;
       -webkit-font-smoothing: antialiased;
     }
+    .container { max-width: 1300px; margin: 0 auto; }
 
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-
-    /* Top Hero Balance Card (Matching Screenshot) */
+    /* Top Hero Header */
     .hero-card {
-      background: var(--card-bg);
+      background: var(--card);
       border-radius: var(--radius-lg);
-      padding: 28px 24px 24px;
-      box-shadow: var(--shadow-md);
+      padding: 28px 24px;
       border: 1px solid var(--border);
+      box-shadow: var(--shadow);
       margin-bottom: 20px;
-      position: relative;
-    }
-
-    .hero-header {
       display: flex;
+      flex-wrap: wrap;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 20px;
+      gap: 20px;
     }
-
-    .profile-pill {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .avatar {
-      width: 42px;
-      height: 42px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #38BDF8, #6366F1);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #FFF;
-      font-weight: 700;
-      font-size: 14px;
-    }
-
-    .strategy-tag {
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 0.5px;
-      color: var(--text-muted);
-      text-transform: uppercase;
-    }
-
-    .strategy-subtag {
-      font-size: 14px;
-      font-weight: 700;
-      color: var(--text-main);
-    }
-
-    .status-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 12px;
-      border-radius: var(--radius-pill);
-      background: var(--green-bg);
-      color: var(--green);
-      font-size: 12px;
-      font-weight: 700;
-    }
-    .status-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: var(--green);
-      animation: pulse 2s infinite;
-    }
-
-    /* Balance Amount */
-    .balance-section {
-      text-align: center;
-      margin: 10px 0 24px;
-    }
-
-    .balance-label {
-      font-size: 12px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 1.2px;
-      color: var(--text-muted);
-      margin-bottom: 6px;
-    }
-
-    .balance-amount {
-      font-size: 42px;
+    .hero-left { display: flex; flex-direction: column; gap: 4px; }
+    .hero-tag { font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.8px; }
+    .hero-balance {
+      font-size: 38px;
       font-weight: 800;
       letter-spacing: -1px;
-      color: var(--text-main);
       display: flex;
-      align-items: center;
-      justify-content: center;
+      align-items: baseline;
       gap: 8px;
     }
-    .balance-currency {
-      font-size: 26px;
-      font-weight: 700;
-      color: var(--text-muted);
-    }
+    .hero-currency { font-size: 20px; font-weight: 700; color: var(--text-muted); }
 
-    /* Solid Black Pill Buttons (Matching Screenshot) */
-    .action-buttons {
-      display: flex;
-      gap: 12px;
-      justify-content: center;
-      max-width: 480px;
-      margin: 0 auto;
-    }
-
+    .hero-actions { display: flex; gap: 10px; flex-wrap: wrap; }
     .btn-pill {
-      flex: 1;
-      background: var(--black-btn);
+      background: var(--btn-black);
       color: #FFFFFF;
       border: none;
-      padding: 14px 20px;
+      padding: 12px 20px;
       border-radius: var(--radius-pill);
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 700;
       font-family: inherit;
       cursor: pointer;
-      display: flex;
+      display: inline-flex;
       align-items: center;
-      justify-content: center;
-      gap: 8px;
-      transition: all 0.15s ease;
-      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
+      gap: 6px;
       text-decoration: none;
+      transition: all 0.15s;
     }
-    .btn-pill:hover {
-      background: var(--black-btn-hover);
-      transform: translateY(-1px);
+    .btn-pill:hover { background: var(--btn-black-hover); transform: translateY(-1px); }
+    .btn-pill.sec { background: var(--card-sub); color: var(--text); border: 1px solid var(--border); }
+    .btn-pill.sec:hover { background: #E2E8F0; }
+
+    /* Quick KPI Grid */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+      margin-bottom: 20px;
     }
-    .btn-pill.secondary {
+    .kpi-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px 18px;
+      box-shadow: var(--shadow-sm);
+    }
+    .kpi-label { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+    .kpi-val { font-size: 22px; font-weight: 800; font-family: 'JetBrains Mono', monospace; }
+    .kpi-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; font-weight: 600; }
+
+    /* TradeZella Style Calendar */
+    .calendar-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      box-shadow: var(--shadow);
+      margin-bottom: 20px;
+    }
+    .cal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .cal-title { font-size: 18px; font-weight: 800; }
+    .cal-nav { display: flex; align-items: center; gap: 8px; }
+    .cal-nav button {
       background: var(--card-sub);
-      color: var(--text-main);
       border: 1px solid var(--border);
-      box-shadow: none;
-    }
-    .btn-pill.secondary:hover {
-      background: #EDF0F4;
-    }
-
-    /* Floating Switch Indicator */
-    .floating-action {
-      position: absolute;
-      right: -14px;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      background: var(--cyan-accent);
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 6px 16px rgba(2, 132, 199, 0.35);
+      border-radius: var(--radius-pill);
+      padding: 6px 14px;
+      font-weight: 700;
       cursor: pointer;
-      border: 3px solid #FFF;
+      font-size: 12px;
     }
+    .cal-month-name { font-size: 15px; font-weight: 700; min-width: 140px; text-align: center; }
 
-    /* Sub-Cards Grid (Matching CAD / USD mini cards in Screenshot) */
-    .metrics-grid {
+    .cal-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 14px;
-      margin-bottom: 20px;
-    }
-
-    .sub-card {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 20px;
-      box-shadow: var(--shadow-sm);
-      transition: transform 0.15s ease, box-shadow 0.15s ease;
-    }
-    .sub-card:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-md);
-    }
-
-    .sub-card-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 12px;
-    }
-
-    .sub-card-tag {
-      display: flex;
-      align-items: center;
+      grid-template-columns: repeat(7, 1fr);
       gap: 8px;
-      font-size: 14px;
-      font-weight: 700;
-      color: var(--text-main);
     }
-
-    .sub-card-icon {
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 13px;
-      background: #F1F5F9;
-    }
-
-    .sub-card-id {
-      font-size: 12px;
-      font-family: 'JetBrains Mono', monospace;
-      color: var(--text-sub);
-    }
-
-    .sub-card-val {
-      font-size: 26px;
-      font-weight: 800;
-      letter-spacing: -0.5px;
-      font-family: 'Plus Jakarta Sans', sans-serif;
-    }
-    .sub-card-footer {
-      font-size: 12px;
-      color: var(--text-muted);
-      margin-top: 4px;
-      font-weight: 600;
-    }
-
-    /* Chart Containers (Pure White Cards with Native SVG) */
-    .grid-chart-2 {
-      display: grid;
-      grid-template-columns: 2fr 1fr;
-      gap: 16px;
-      margin-bottom: 20px;
-    }
-    @media (max-width: 860px) {
-      .grid-chart-2 { grid-template-columns: 1fr; }
-    }
-
-    .chart-card {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 24px;
-      box-shadow: var(--shadow-sm);
-    }
-
-    .chart-card-title {
-      font-size: 15px;
-      font-weight: 700;
-      color: var(--text-main);
-      margin-bottom: 4px;
-    }
-    .chart-card-desc {
-      font-size: 12px;
-      color: var(--text-muted);
-      margin-bottom: 16px;
-    }
-
-    .svg-container {
-      width: 100%;
-      height: 240px;
-      position: relative;
-    }
-    svg {
-      width: 100%;
-      height: 100%;
-      overflow: visible;
-    }
-
-    /* Transactions / Trade Log Card (Matching bottom sheet in screenshot) */
-    .transactions-card {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 24px;
-      box-shadow: var(--shadow-md);
-    }
-
-    .transactions-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 16px;
-    }
-
-    .transactions-title {
-      font-size: 18px;
-      font-weight: 800;
-    }
-
-    .see-all-link {
-      font-size: 14px;
-      font-weight: 700;
-      color: var(--cyan-accent);
-      text-decoration: none;
-      cursor: pointer;
-    }
-
-    /* Transaction Row Item */
-    .trade-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 14px 0;
-      border-bottom: 1px solid var(--border);
-      cursor: pointer;
-      transition: background 0.15s;
-    }
-    .trade-row:last-child { border-bottom: none; }
-    .trade-row:hover { background: var(--card-sub); border-radius: var(--radius-md); padding: 14px 10px; }
-
-    .trade-left {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-    .trade-icon {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
-      font-size: 14px;
-    }
-    .trade-icon.long { background: var(--green-bg); color: var(--green); }
-    .trade-icon.short { background: var(--red-bg); color: var(--red); }
-
-    .trade-info-title {
-      font-size: 14px;
-      font-weight: 700;
-      color: var(--text-main);
-    }
-    .trade-info-sub {
-      font-size: 12px;
-      color: var(--text-muted);
-      font-family: 'JetBrains Mono', monospace;
-    }
-
-    .trade-right {
-      text-align: right;
-    }
-    .trade-pnl {
-      font-size: 15px;
-      font-weight: 800;
-      font-family: 'JetBrains Mono', monospace;
-    }
-    .trade-pnl.win { color: var(--green); }
-    .trade-pnl.loss { color: var(--red); }
-
-    .trade-r {
+    .cal-weekday {
+      text-align: center;
       font-size: 11px;
       font-weight: 700;
       color: var(--text-muted);
       text-transform: uppercase;
+      padding-bottom: 8px;
+    }
+    .cal-day {
+      background: var(--card-sub);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      min-height: 84px;
+      padding: 8px 10px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.15s;
+    }
+    .cal-day.empty { background: transparent; border-color: transparent; }
+    .cal-day.profit { background: var(--green-bg); border-color: #A7F3D0; }
+    .cal-day.loss { background: var(--red-bg); border-color: #FECACA; }
+    .cal-day-num { font-size: 12px; font-weight: 700; color: var(--text-muted); }
+    .cal-day-pnl { font-size: 14px; font-weight: 800; font-family: 'JetBrains Mono', monospace; }
+    .cal-day.profit .cal-day-pnl { color: var(--green-text); }
+    .cal-day.loss .cal-day-pnl { color: var(--red-text); }
+    .cal-day-trades { font-size: 10px; font-weight: 700; color: var(--text-muted); }
+
+    /* Grid Layout for Charts */
+    .grid-2col {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(440px, 1fr));
+      gap: 18px;
+      margin-bottom: 20px;
+    }
+    @media (max-width: 900px) {
+      .grid-2col { grid-template-columns: 1fr; }
+      .cal-grid { gap: 4px; }
+      .cal-day { min-height: 64px; padding: 4px; }
+      .cal-day-pnl { font-size: 11px; }
     }
 
-    /* Modal for Trade Audit Details */
-    .modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(15, 23, 42, 0.6);
-      backdrop-filter: blur(4px);
-      display: none;
+    .chart-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 22px;
+      box-shadow: var(--shadow-sm);
+    }
+    .chart-title-wrap { margin-bottom: 16px; }
+    .chart-title { font-size: 15px; font-weight: 800; color: var(--text); }
+    .chart-sub { font-size: 12px; color: var(--text-muted); }
+
+    .svg-box { width: 100%; height: 240px; position: relative; }
+    svg { width: 100%; height: 100%; overflow: visible; }
+
+    /* Trade Ledger Table */
+    .ledger-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      box-shadow: var(--shadow);
+      overflow-x: auto;
+    }
+    .ledger-head {
+      display: flex;
+      justify-content: space-between;
       align-items: center;
-      justify-content: center;
-      padding: 16px;
-      z-index: 100;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .search-box {
+      background: var(--card-sub);
+      border: 1px solid var(--border);
+      padding: 8px 14px;
+      border-radius: var(--radius-pill);
+      font-size: 13px;
+      outline: none;
+      font-family: inherit;
+    }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; font-family: 'JetBrains Mono', monospace; }
+    th { text-align: left; padding: 12px 14px; color: var(--text-muted); border-bottom: 1px solid var(--border); font-size: 11px; text-transform: uppercase; font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700; }
+    td { padding: 12px 14px; border-bottom: 1px solid #F1F5F9; }
+    tr:hover td { background: var(--card-sub); }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: var(--radius-pill);
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .badge.long { background: var(--green-bg); color: var(--green-text); }
+    .badge.short { background: var(--red-bg); color: var(--red-text); }
+    .badge.win { background: var(--green-bg); color: var(--green-text); }
+    .badge.loss { background: var(--red-bg); color: var(--red-text); }
+    .badge.c2c { background: var(--yellow-bg); color: var(--yellow-text); }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(15, 23, 42, 0.5);
+      backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center;
+      padding: 16px; z-index: 100;
     }
     .modal-card {
-      background: #FFFFFF;
-      border-radius: var(--radius-lg);
-      max-width: 500px;
-      width: 100%;
-      padding: 24px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-    }
-
-    @keyframes pulse {
-      0% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.4; transform: scale(1.3); }
-      100% { opacity: 1; transform: scale(1); }
+      background: #FFFFFF; border-radius: var(--radius-lg); max-width: 480px; width: 100%; padding: 24px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.15);
     }
   </style>
 </head>
 <body>
 
 <div class="container">
-  
-  <!-- Hero Card (Exact Neobank Style from Screenshot) -->
+
+  <!-- 1. Hero Header Card -->
   <div class="hero-card">
-    <div class="hero-header">
-      <div class="profile-pill">
-        <div class="avatar">NQ</div>
-        <div>
-          <div class="strategy-tag" id="metaSymbol">NASDAQ 100 FUTURES</div>
-          <div class="strategy-subtag" id="metaStrategy">1H-15M-5M-1M Trailing Engine</div>
-        </div>
-      </div>
-      <div class="status-badge">
-        <span class="status-dot"></span>
-        <span id="metaStatus">Verified Backtest</span>
-      </div>
-    </div>
-
-    <!-- Balance Section -->
-    <div class="balance-section">
-      <div class="balance-label">Strategy Net Balance</div>
-      <div class="balance-amount">
+    <div class="hero-left">
+      <div class="hero-tag" id="metaSymbol">NASDAQ Futures · Strategy Overview</div>
+      <div class="hero-balance">
         <span id="heroNetPnl">$0.00</span>
-        <span class="balance-currency">USD</span>
+        <span class="hero-currency">USD</span>
       </div>
     </div>
-
-    <!-- Solid Black Pill Buttons -->
-    <div class="action-buttons">
-      <a class="btn-pill" id="downloadCsvBtn" href="trades.csv" download>
-        <span>↓</span> Download CSV
+    <div class="hero-actions">
+      <a class="btn-pill" id="csvDownloadBtn" href="trades.csv" download>
+        ↓ Export CSV
       </a>
-      <button class="btn-pill secondary" onclick="window.location.reload()">
-        <span>↻</span> Refresh
+      <button class="btn-pill sec" onclick="window.location.reload()">
+        ↻ Reload Data
       </button>
     </div>
+  </div>
 
-    <!-- Cyan Floating Action Button (Matching Screenshot) -->
-    <div class="floating-action" title="Switch Multi-Timeframe View">
-      ⇄
+  <!-- 2. Minimal KPI Summary Cards -->
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-label">Win Rate</div>
+      <div class="kpi-val" id="valWinRate">0.0%</div>
+      <div class="kpi-sub" id="valWinLossCount">0W / 0L</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Profit Factor</div>
+      <div class="kpi-val" id="valProfitFactor">0.00</div>
+      <div class="kpi-sub" id="valSharpe">Sharpe: 0.00</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Expectancy (R)</div>
+      <div class="kpi-val" style="color: var(--green);" id="valExpectancy">+0.00R</div>
+      <div class="kpi-sub">Per executed trade</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Max Drawdown</div>
+      <div class="kpi-val" style="color: var(--red);" id="valMaxDd">-0.0%</div>
+      <div class="kpi-sub" id="valMaxDdDollars">-$0.00</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Total Trades</div>
+      <div class="kpi-val" id="valTotalTrades">0</div>
+      <div class="kpi-sub" id="valAvgHold">0m Avg Hold</div>
     </div>
   </div>
 
-  <!-- Sub-Cards (Metrics Grid like CAD / USD in Screenshot) -->
-  <div class="metrics-grid">
-    <div class="sub-card">
-      <div class="sub-card-header">
-        <div class="sub-card-tag">
-          <div class="sub-card-icon" style="color: var(--green);">▲</div>
-          <span>Win Rate</span>
-        </div>
-        <span class="sub-card-id" id="tradeCounts">0 / 0</span>
+  <!-- 3. TradeZella-Style P&L Trading Calendar -->
+  <div class="calendar-card">
+    <div class="cal-header">
+      <div class="cal-title">P&L Calendar</div>
+      <div class="cal-nav">
+        <button onclick="changeMonth(-1)">‹ Prev</button>
+        <span class="cal-month-name" id="calMonthDisplay">Month Year</span>
+        <button onclick="changeMonth(1)">Next ›</button>
       </div>
-      <div class="sub-card-val" id="valWinRate">0.0%</div>
-      <div class="sub-card-footer" id="valExpectancy">Expectancy: +0.0R</div>
     </div>
-
-    <div class="sub-card">
-      <div class="sub-card-header">
-        <div class="sub-card-tag">
-          <div class="sub-card-icon" style="color: var(--cyan-accent);">⚡</div>
-          <span>Profit Factor</span>
-        </div>
-        <span class="sub-card-id">RATIO</span>
-      </div>
-      <div class="sub-card-val" id="valProfitFactor">0.00</div>
-      <div class="sub-card-footer" id="valSharpe">Sharpe: 0.00</div>
-    </div>
-
-    <div class="sub-card">
-      <div class="sub-card-header">
-        <div class="sub-card-tag">
-          <div class="sub-card-icon" style="color: var(--red);">▼</div>
-          <span>Max Drawdown</span>
-        </div>
-        <span class="sub-card-id">PEAK TO VALLEY</span>
-      </div>
-      <div class="sub-card-val" style="color: var(--red);" id="valMaxDd">0.0%</div>
-      <div class="sub-card-footer" id="valMaxDdDays">Controlled Risk</div>
-    </div>
-
-    <div class="sub-card">
-      <div class="sub-card-header">
-        <div class="sub-card-tag">
-          <div class="sub-card-icon" style="color: #6366F1;">⏱</div>
-          <span>Avg Hold Time</span>
-        </div>
-        <span class="sub-card-id">INTRADAY</span>
-      </div>
-      <div class="sub-card-val" id="valAvgHold">0 m</div>
-      <div class="sub-card-footer">Dynamic Multi-R Trailing</div>
+    <div class="cal-grid" id="calGrid">
+      <!-- Calendar dynamically built via JS -->
     </div>
   </div>
 
-  <!-- Charts Row (Pure Native SVG Charts) -->
-  <div class="grid-chart-2">
-    <!-- Main Native SVG Equity Curve -->
+  <!-- 4. The 6 Main Visual Charts -->
+  <div class="grid-2col">
+    <!-- Chart 1: Equity Curve & Capital Growth -->
     <div class="chart-card">
-      <div class="chart-card-title">Cumulative Growth Curve</div>
-      <div class="chart-card-desc">Chronological equity evolution ($)</div>
-      <div class="svg-container">
-        <svg id="svgEquityCurve" viewBox="0 0 600 240"></svg>
+      <div class="chart-title-wrap">
+        <div class="chart-title">1. Equity Curve & Capital Growth</div>
+        <div class="chart-sub">Account balance evolution ($)</div>
+      </div>
+      <div class="svg-box"><svg id="svgEquity" viewBox="0 0 500 240"></svg></div>
+    </div>
+
+    <!-- Chart 2: Trade-by-Trade Performance (R-Multiple Bars) -->
+    <div class="chart-card">
+      <div class="chart-title-wrap">
+        <div class="chart-title">2. Trade-by-Trade Performance</div>
+        <div class="chart-sub">Sequential R-Multiples (🟢 Win, 🔴 Loss, 🟡 C2C)</div>
+      </div>
+      <div class="svg-box"><svg id="svgTradeBars" viewBox="0 0 500 240"></svg></div>
+    </div>
+
+    <!-- Chart 3: Outcome Distribution -->
+    <div class="chart-card">
+      <div class="chart-title-wrap">
+        <div class="chart-title">3. Outcome Distribution</div>
+        <div class="chart-sub">Win % vs Loss % vs Cost-to-Cost %</div>
+      </div>
+      <div class="svg-box" style="display:flex; justify-content:center;">
+        <svg id="svgOutcomeDonut" viewBox="0 0 240 240" style="max-width:220px;"></svg>
       </div>
     </div>
 
-    <!-- Native SVG Setup Distribution Donut -->
+    <!-- Chart 4: Exit Reason Breakdown -->
     <div class="chart-card">
-      <div class="chart-card-title">Setup Breakdown</div>
-      <div class="chart-card-desc">Execution type distribution</div>
-      <div class="svg-container" style="display: flex; align-items: center; justify-content: center;">
-        <svg id="svgSetupDonut" viewBox="0 0 240 240" style="max-width: 220px;"></svg>
+      <div class="chart-title-wrap">
+        <div class="chart-title">4. Exit Reason Breakdown</div>
+        <div class="chart-sub">Strategy execution audit reasons</div>
       </div>
+      <div class="svg-box" style="display:flex; justify-content:center;">
+        <svg id="svgExitDonut" viewBox="0 0 240 240" style="max-width:220px;"></svg>
+      </div>
+    </div>
+
+    <!-- Chart 5: Long vs Short Performance -->
+    <div class="chart-card">
+      <div class="chart-title-wrap">
+        <div class="chart-title">5. Long vs Short Performance</div>
+        <div class="chart-sub">Buy vs Sell Net P&L comparison ($)</div>
+      </div>
+      <div class="svg-box"><svg id="svgLongShort" viewBox="0 0 500 240"></svg></div>
+    </div>
+
+    <!-- Chart 6: Hour-of-Day P&L Analysis -->
+    <div class="chart-card">
+      <div class="chart-title-wrap">
+        <div class="chart-title">6. Hour-of-Day P&L Analysis</div>
+        <div class="chart-sub">24-Hour session performance (UTC)</div>
+      </div>
+      <div class="svg-box"><svg id="svgHourly" viewBox="0 0 500 240"></svg></div>
     </div>
   </div>
 
-  <!-- Transactions Section (Matching Screenshot Bottom List) -->
-  <div class="transactions-card">
-    <div class="transactions-header">
-      <div class="transactions-title">Transactions (Trade Log)</div>
-      <div class="see-all-link" onclick="toggleFullLog()">See all</div>
+  <!-- 5. Interactive Trade Ledger Table -->
+  <div class="ledger-card">
+    <div class="ledger-head">
+      <div class="chart-title">Trade Ledger</div>
+      <input type="text" class="search-box" id="tableSearch" placeholder="Search by ID, Setup..." onkeyup="filterLedger()">
     </div>
-    <div id="tradesList">
-      <!-- Injected via JavaScript -->
-    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Type</th>
+          <th>Setup</th>
+          <th>Entry</th>
+          <th>Exit</th>
+          <th>R-Multiple</th>
+          <th>Net P&L</th>
+          <th>Exit Reason</th>
+        </tr>
+      </thead>
+      <tbody id="ledgerBody">
+        <!-- Rendered via JS -->
+      </tbody>
+    </table>
   </div>
 
 </div>
 
-<!-- Interactive Modal for Trade Details -->
+<!-- Trade Audit Modal -->
 <div class="modal-overlay" id="auditModal" onclick="closeModal(event)">
   <div class="modal-card" onclick="event.stopPropagation()">
-    <div class="transactions-header" style="margin-bottom: 20px;">
-      <h3 style="font-size: 18px; font-weight: 800;" id="modalTradeId">Trade Audit</h3>
-      <span style="cursor: pointer; font-size: 20px;" onclick="closeModal()">✕</span>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+      <h3 style="font-size:16px; font-weight:800;" id="modalId">Trade Audit</h3>
+      <span style="cursor:pointer; font-weight:700;" onclick="closeModal()">✕</span>
     </div>
-    <div id="modalContent" style="font-size: 14px; line-height: 1.8;"></div>
-    <button class="btn-pill" style="width: 100%; margin-top: 20px;" onclick="closeModal()">Close</button>
+    <div id="modalBody" style="font-size:13px; line-height:1.8; color:var(--text);"></div>
   </div>
 </div>
 
 <script>
-  // Dynamic Ingestion from dashboard/data.json with Fallback Sample Data
-  async function loadDashboard() {
-    let data;
+  let rawData = null;
+  let currentCalDate = new Date();
+  let tradesList = [];
+
+  async function init() {
     try {
-      const response不易 = await fetch('data.json');
-      if (!response不易.ok) throw new Error();
-      data = await response不易.json();
+      const res = await fetch('data.json');
+      if (!res.ok) throw new Error();
+      rawData = await res.json();
     } catch (e) {
-      console.log("Loading fallback demo data for preview...");
-      data = {
-        meta: { symbol: "MNQ / NQ=F", strategy_name: "1H-15M-5M-1M Trailing Engine" },
-        metrics: {
-          net_profit: 20568.72,
-          win_rate: 61.4,
-          total_trades: 88,
-          winning_trades: 54,
-          losing_trades: 34,
-          profit_factor: 2.45,
-          sharpe_ratio: 2.31,
-          max_drawdown_pct: 4.82,
-          expectancy_R: 0.92,
-          avg_holding_minutes: 38.5
-        },
-        timeseries: {
-          equity_curve: [10000, 10800, 10500, 11900, 12600, 13400, 14900, 16800, 18500, 20568.72]
-        },
-        distributions: {
-          setups: {
-            "LONG_BREAKOUT": { count: 36 },
-            "SHORT_BREAKOUT": { count: 28 },
-            "SHORT_AFTER_UPSWEEP": { count: 14 },
-            "LONG_AFTER_DOWNSWEEP": { count: 10 }
-          }
-        },
-        trades: [
-          { trade_id: "TR_0088", direction: "LONG", setup_type: "LONG_BREAKOUT", entry_time: "2026-08-30 14:35", entry_price: 18450.25, exit_price: 18520.00, r_multiple: 4.0, net_pnl: 697.50, exit_reason: "TRAILING_STOP_HIT" },
-          { trade_id: "TR_0087", direction: "SHORT", setup_type: "SHORT_AFTER_UPSWEEP", entry_time: "2026-08-30 11:20", entry_price: 18490.00, exit_price: 18445.00, r_multiple: 3.0, net_pnl: 450.00, exit_reason: "TRAILING_STOP_HIT" },
-          { trade_id: "TR_0086", direction: "LONG", setup_type: "LONG_BREAKOUT", entry_time: "2026-08-29 10:15", entry_price: 18320.00, exit_price: 18305.00, r_multiple: -1.0, net_pnl: -150.00, exit_reason: "INITIAL_STOP_HIT" },
-          { trade_id: "TR_0085", direction: "SHORT", setup_type: "SHORT_BREAKOUT", entry_time: "2026-08-28 13:40", entry_price: 18380.00, exit_price: 18260.00, r_multiple: 6.0, net_pnl: 1200.00, exit_reason: "TRAILING_STOP_HIT" }
-        ]
-      };
+      console.log("Using sample backtest payload...");
+      rawData = getFallbackData();
     }
-
-    renderMetrics(data);
-    renderSvgEquity(data.timeseries ? data.timeseries.equity_curve : []);
-    renderSvgDonut(data.distributions ? data.distributions.setups : {});
-    renderTrades(data.trades || []);
+    tradesList = rawData.trades || [];
+    renderDashboard();
   }
 
-  function renderMetrics(data) {
-    const m不易 = data.metrics || {};
-    document.getElementById('heroNetPnl').innerText = `$${(m不易.net_profit || 0).toLocaleString('en-US', {minimumFractionDigits: 2})}`;
-    document.getElementById('valWinRate').innerText = `${m不易.win_rate || 0}%`;
-    document.getElementById('tradeCounts').innerText = `${m不易.winning_trades || 0}W / ${m不易.losing_trades || 0}L`;
-    document.getElementById('valExpectancy').innerText = `Expectancy: +${m不易.expectancy_R || 0}R`;
-    document.getElementById('valProfitFactor').innerText = (m不易.profit_factor || 0).toFixed(2);
-    document.getElementById('valSharpe').innerText = `Sharpe: ${(m不易.sharpe_ratio || 0).toFixed(2)}`;
-    document.getElementById('valMaxDd').innerText = `-${m不易.max_drawdown_pct || 0}%`;
-    document.getElementById('valAvgHold').innerText = `${Math.round(m不易.avg_holding_minutes || 0)} mins`;
+  function renderDashboard() {
+    const m = rawData.metrics || {};
+    document.getElementById('heroNetPnl').innerText = `$${(m.net_profit || 0).toLocaleString('en-US', {minimumFractionDigits:2})}`;
+    document.getElementById('valWinRate').innerText = `${m.win_rate || 0}%`;
+    document.getElementById('valWinLossCount').innerText = `${m.winning_trades || 0}W / ${m.losing_trades || 0}L`;
+    document.getElementById('valProfitFactor').innerText = (m.profit_factor || 0).toFixed(2);
+    document.getElementById('valSharpe').innerText = `Sharpe: ${(m.sharpe_ratio || 0).toFixed(2)}`;
+    document.getElementById('valExpectancy').innerText = `+${m.expectancy_R || 0}R`;
+    document.getElementById('valMaxDd').innerText = `-${m.max_drawdown_pct || 0}%`;
+    document.getElementById('valMaxDdDollars').innerText = `-$${(m.max_drawdown || 0).toFixed(2)}`;
+    document.getElementById('valTotalTrades').innerText = m.total_trades || tradesList.length;
+    document.getElementById('valAvgHold').innerText = `${Math.round(m.avg_holding_minutes || 0)}m Hold`;
+
+    // 1. Render Calendar
+    renderCalendar();
+
+    // 2. Render 6 Native SVG Charts
+    renderEquityChart();
+    renderTradeBarsChart();
+    renderOutcomeDonut();
+    renderExitDonut();
+    renderLongShortChart();
+    renderHourlyChart();
+
+    // 3. Render Table
+    renderLedger(tradesList);
   }
 
-  // Pure Native SVG Polyline Equity Curve
-  function renderSvgEquity(points) {
-    const svg = document.getElementById('svgEquityCurve');
-    if (!points || points.length < 2) return;
+  // --- 1. TradeZella P&L Calendar Logic ---
+  function renderCalendar() {
+    const grid = document.getElementById('calGrid');
+    const year = currentCalDate.getFullYear();
+    const month = currentCalDate.getMonth();
+    const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    document.getElementById('calMonthDisplay').innerText = `${monthNames[month]} ${year}`;
 
-    const w = 600, h = 240, pad = 20;
-    const minVal = Math.min(...points);
-    const maxVal不易 = Math.max(...points);
-    const range = maxVal不易 - minVal || 1;
-
-    const coords = points.map((val, idx) => {
-      const x = pad + (idx / (points.length - 1)) * (w - pad * 2);
-      const y = h - pad - ((val - minVal) / range) * (h - pad * 2);
-      return [x, y];
+    // Aggregate Trades by Date (YYYY-MM-DD)
+    const dayMap = {};
+    tradesList.forEach(t => {
+      if (!t.exit_time && !t.entry_time) return;
+      const dStr = (t.exit_time || t.entry_time).substring(0, 10);
+      if (!dayMap[dStr]) dayMap[dStr] = { pnl: 0, trades: 0, wins: 0 };
+      dayMap[dStr].pnl += (t.net_pnl || 0);
+      dayMap[dStr].trades += 1;
+      if (t.net_pnl > 0) dayMap[dStr].wins += 1;
     });
 
+    const firstDayIndex = new Date(year, month, 1).getDay(); // 0 is Sun
+    const totalDays = new Date(year, month + 1, 0).getDate();
+
+    let html = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(d => `<div class="cal-weekday">${d}</div>`).join('');
+
+    // Empty lead cells
+    for (let i = 0; i < firstDayIndex; i++) {
+      html += `<div class="cal-day empty"></div>`;
+    }
+
+    // Days of month
+    for (let day = 1; day <= totalDays; day++) {
+      const dateKey = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+      const dayData = dayMap[dateKey];
+
+      if (dayData) {
+        const isProf = dayData.pnl > 0;
+        const isLoss = dayData.pnl < 0;
+        const cls = isProf ? 'profit' : (isLoss ? 'loss' : '');
+        html += `
+          <div class="cal-day ${cls}">
+            <div class="cal-day-num">${day}</div>
+            <div class="cal-day-pnl">${isProf ? '+' : ''}$${Math.round(dayData.pnl)}</div>
+            <div class="cal-day-trades">${dayData.trades} trade${dayData.trades > 1 ? 's' : ''}</div>
+          </div>
+        `;
+      } else {
+        html += `
+          <div class="cal-day">
+            <div class="cal-day-num">${day}</div>
+          </div>
+        `;
+      }
+    }
+    grid.innerHTML = html;
+  }
+
+  function changeMonth(delta) {
+    currentCalDate.setMonth(currentCalDate.getMonth() + delta);
+    renderCalendar();
+  }
+
+  // --- 2. Chart 1: Equity Curve (Line with Area Fill) ---
+  function renderEquityChart() {
+    const svg = document.getElementById('svgEquity');
+    const points = (rawData.timeseries && rawData.timeseries.equity_curve) || [10000, 10500, 10200, 11400, 12200];
+    const w = 500, h = 240, p = 24;
+    const min = Math.min(...points), max = Math.max(...points);
+    const range = max - min || 1;
+
+    const coords = points.map((v, i) => [
+      p + (i / (points.length - 1)) * (w - p * 2),
+      h - p - ((v - min) / range) * (h - p * 2)
+    ]);
+
     const ptsStr = coords.map(c => c.join(',')).join(' ');
-    const fillStr = `${ptsStr} ${w - pad},${h - pad} ${pad},${h - pad}`;
+    const fillStr = `${ptsStr} ${w-p},${h-p} ${p},${h-p}`;
 
     svg.innerHTML = `
       <defs>
         <linearGradient id="eqGrad" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="#0284C7" stop-opacity="0.18"/>
-          <stop offset="100%" stop-color="#0284C7" stop-opacity="0.0"/>
+          <stop offset="0%" stop-color="#10B981" stop-opacity="0.25"/>
+          <stop offset="100%" stop-color="#10B981" stop-opacity="0.0"/>
         </linearGradient>
       </defs>
-      <!-- Gridlines -->
-      <line x1="${pad}" y1="${pad}" x2="${w-pad}" y2="${pad}" stroke="#F1F5F9" stroke-width="1"/>
-      <line x1="${pad}" y1="${h/2}" x2="${w-pad}" y2="${h/2}" stroke="#F1F5F9" stroke-width="1"/>
-      <line x1="${pad}" y1="${h-pad}" x2="${w-pad}" y2="${h-pad}" stroke="#E2E8F0" stroke-width="1"/>
-      <!-- Area Fill -->
+      <line x1="${p}" y1="${h-p}" x2="${w-p}" y2="${h-p}" stroke="#E2E8F0" stroke-width="1"/>
       <polygon points="${fillStr}" fill="url(#eqGrad)"/>
-      <!-- Main Line -->
-      <polyline points="${ptsStr}" fill="none" stroke="#0284C7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-      <!-- Endpoint Dot -->
-      <circle cx="${coords[coords.length-1][0]}" cy="${coords[coords.length-1][1]}" r="5" fill="#0284C7" stroke="#FFFFFF" stroke-width="2"/>
+      <polyline points="${ptsStr}" fill="none" stroke="#10B981" stroke-width="2.5" stroke-linejoin="round"/>
     `;
   }
 
-  // Pure Native SVG Donut Chart
-  function renderSvgDonut(setups) {
-    const svg = document.getElementById('svgSetupDonut');
-    const entries = Object.entries(setups || {});
-    const total = entries.reduce((acc, [, v]) => acc + (v.count || 0), 0) || 1;
+  // --- 3. Chart 2: Trade-by-Trade Performance (Bar Chart) ---
+  function renderTradeBarsChart() {
+    const svg = document.getElementById('svgTradeBars');
+    const rVals = tradesList.map(t => t.r_multiple || 0);
+    if (!rVals.length) return;
 
-    let cumulative = 0;
-    const colors = ['#0284C7', '#0F172A', '#10B981', '#F43F5E'];
-    const r = 70, cx不易 = 120, cy不易 = 120;
+    const w = 500, h = 240, p = 24;
+    const maxR = Math.max(3, ...rVals.map(Math.abs));
+    const zeroY = h / 2;
+    const barWidth = Math.max(3, (w - p * 2) / rVals.length - 2);
 
-    let paths = '';
-    entries.forEach(([key, val], idx) => {
-      const frac = (val.count || 0) / total;
-      const startAngle = cumulative * 2 * Math.PI;
-      cumulative += frac;
-      const endAngle = cumulative * 2 * Math.PI;
+    let bars = `<line x1="${p}" y1="${zeroY}" x2="${w-p}" y2="${zeroY}" stroke="#94A3B8" stroke-dasharray="3,3"/>`;
+    rVals.forEach((r, i) => {
+      const x = p + i * ((w - p * 2) / rVals.length);
+      const barH = (Math.abs(r) / maxR) * (h / 2 - p);
+      const y = r >= 0 ? zeroY - barH : zeroY;
+      const color = r > 0.2 ? '#10B981' : (r < -0.2 ? '#EF4444' : '#F59E0B');
+      bars += `<rect x="${x}" y="${y}" width="${barWidth}" height="${Math.max(2, barH)}" fill="${color}" rx="2"/>`;
+    });
+    svg.innerHTML = bars;
+  }
 
-      const x1 = cx不易 + r * Math.sin(startAngle);
-      const y1不易 = cy不易 - r * Math.cos(startAngle);
-      const x2 = cx不易 + r * Math.sin(endAngle);
-      const y2不易 = cy不易 - r * Math.cos(endAngle);
+  // --- 4. Chart 3: Outcome Distribution (Doughnut) ---
+  function renderOutcomeDonut() {
+    const wins = tradesList.filter(t => (t.r_multiple || 0) > 0.2).length;
+    const losses = tradesList.filter(t => (t.r_multiple || 0) < -0.2).length;
+    const c2c = tradesList.length - wins - losses;
+    drawDonut('svgOutcomeDonut', [
+      { label: 'Win', val: wins, color: '#10B981' },
+      { label: 'Loss', val: losses, color: '#EF4444' },
+      { label: 'C2C', val: c2c, color: '#F59E0B' }
+    ]);
+  }
 
-      const largeArc = frac > 0.5 ? 1 : 0;
-      const col = colors[idx % colors.length];
+  // --- 5. Chart 4: Exit Reason Breakdown (Doughnut) ---
+  function renderExitDonut() {
+    const map = {};
+    tradesList.forEach(t => {
+      const r = t.exit_reason || 'TRAILING_STOP_HIT';
+      map[r] = (map[r] || 0) + 1;
+    });
+    const colors = ['#0EA5E9', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6'];
+    const items = Object.entries(map).map(([k, v], idx) => ({ label: k, val: v, color: colors[idx % colors.length] }));
+    drawDonut('svgExitDonut', items);
+  }
 
-      paths += `<path d="M ${x1} ${y1不易} A ${r} ${r} 0 ${largeArc} 1 ${x2} ${y2不易}" fill="none" stroke="${col}" stroke-width="26"/>`;
+  function drawDonut(svgId, items) {
+    const svg = document.getElementById(svgId);
+    const total = items.reduce((acc, x) => acc + x.val, 0) || 1;
+    let cum = 0, paths = '';
+    const r = 70, cx = 120, cy = 120;
+
+    items.forEach(it => {
+      const frac = it.val / total;
+      if (frac === 0) return;
+      const a1 = cum * 2 * Math.PI;
+      cum += frac;
+      const a2 = cum * 2 * Math.PI;
+
+      const x1 = cx + r * Math.sin(a1), y1 = cy - r * Math.cos(a1);
+      const x2 = cx + r * Math.sin(a2), y2 = cy - r * Math.cos(a2);
+      const large = frac > 0.5 ? 1 : 0;
+      paths += `<path d="M ${x1} ${y1} A ${r} ${r} 0 ${large} 1 ${x2} ${y2}" fill="none" stroke="${it.color}" stroke-width="26"/>`;
     });
 
     svg.innerHTML = `
       ${paths}
-      <text x="${cx不易}" y="${cy不易 + 5}" text-anchor="middle" font-size="20" font-weight="800" fill="#0F172A">${total}</text>
-      <text x="${cx不易}" y="${cy不易 + 22}" text-anchor="middle" font-size="11" font-weight="700" fill="#94A3B8">SETUPS</text>
+      <text x="${cx}" y="${cy+5}" text-anchor="middle" font-size="18" font-weight="800" fill="#0F172A">${total}</text>
+      <text x="${cx}" y="${cy+20}" text-anchor="middle" font-size="10" font-weight="700" fill="#94A3B8">TRADES</text>
     `;
   }
 
-  // Render Transaction List (Matching Screenshot items)
-  let allTrades = [];
-  function renderTrades(trades) {
-    allTrades = trades;
-    const container = document.getElementById('tradesList');
-    container.innerHTML = trades.slice(0, 10).map(t => {
-      const isWin = (t.net_pnl || 0) >= 0;
-      const isLong = (t.direction || "LONG") === "LONG";
+  // --- 6. Chart 5: Long vs Short Performance (Grouped Bar) ---
+  function renderLongShortChart() {
+    const svg = document.getElementById('svgLongShort');
+    const longs = tradesList.filter(t => t.direction === 'LONG');
+    const shorts = tradesList.filter(t => t.direction === 'SHORT');
+
+    const longPnl = longs.reduce((acc, t) => acc + (t.net_pnl || 0), 0);
+    const shortPnl = shorts.reduce((acc, t) => acc + (t.net_pnl || 0), 0);
+
+    const maxVal = Math.max(100, Math.abs(longPnl), Math.abs(shortPnl));
+    const w = 500, h = 240, zeroY = 140;
+
+    const barW = 70;
+    const lH = (Math.abs(longPnl) / maxVal) * 80;
+    const sH = (Math.abs(shortPnl) / maxVal) * 80;
+
+    const lY = longPnl >= 0 ? zeroY - lH : zeroY;
+    const sY = shortPnl >= 0 ? zeroY - sH : zeroY;
+
+    svg.innerHTML = `
+      <line x1="40" y1="${zeroY}" x2="460" y2="${zeroY}" stroke="#E2E8F0" stroke-width="1.5"/>
+      <!-- Long Bar -->
+      <rect x="130" y="${lY}" width="${barW}" height="${Math.max(4, lH)}" fill="${longPnl >= 0 ? '#10B981' : '#EF4444'}" rx="4"/>
+      <text x="165" y="${zeroY + 22}" text-anchor="middle" font-size="12" font-weight="700" fill="#0F172A">BUY (LONG)</text>
+      <text x="165" y="${longPnl >= 0 ? lY - 8 : lY + lH + 16}" text-anchor="middle" font-size="13" font-weight="800" font-family="JetBrains Mono" fill="${longPnl >= 0 ? '#047857' : '#B91C1C'}">$${Math.round(longPnl)}</text>
+
+      <!-- Short Bar -->
+      <rect x="300" y="${sY}" width="${barW}" height="${Math.max(4, sH)}" fill="${shortPnl >= 0 ? '#10B981' : '#EF4444'}" rx="4"/>
+      <text x="335" y="${zeroY + 22}" text-anchor="middle" font-size="12" font-weight="700" fill="#0F172A">SELL (SHORT)</text>
+      <text x="335" y="${shortPnl >= 0 ? sY - 8 : sY + sH + 16}" text-anchor="middle" font-size="13" font-weight="800" font-family="JetBrains Mono" fill="${shortPnl >= 0 ? '#047857' : '#B91C1C'}">$${Math.round(shortPnl)}</text>
+    `;
+  }
+
+  // --- 7. Chart 6: Hour-of-Day P&L Analysis (24-Hour Bar Chart) ---
+  function renderHourlyChart() {
+    const svg = document.getElementById('svgHourly');
+    const hourMap = Array(24).fill(0);
+
+    tradesList.forEach(t => {
+      if (!t.entry_time) return;
+      const h = parseInt(t.entry_time.substring(11, 13), 10);
+      if (!isNaN(h) && h >= 0 && h < 24) {
+        hourMap[h] += (t.net_pnl || 0);
+      }
+    });
+
+    const maxPnl = Math.max(50, ...hourMap.map(Math.abs));
+    const w = 500, h = 240, p = 24;
+    const zeroY = h / 2;
+    const barW = (w - p * 2) / 24 - 3;
+
+    let out = `<line x1="${p}" y1="${zeroY}" x2="${w-p}" y2="${zeroY}" stroke="#CBD5E1" stroke-width="1"/>`;
+
+    hourMap.forEach((pnl, hr) => {
+      const x = p + hr * ((w - p * 2) / 24);
+      const bH = (Math.abs(pnl) / maxPnl) * (h / 2 - p);
+      const y = pnl >= 0 ? zeroY - bH : zeroY;
+      const color = pnl >= 0 ? '#10B981' : '#EF4444';
+      out += `
+        <rect x="${x}" y="${y}" width="${barW}" height="${Math.max(2, bH)}" fill="${color}" rx="1"/>
+        ${hr % 4 === 0 ? `<text x="${x+barW/2}" y="${h-4}" font-size="9" text-anchor="middle" fill="#94A3B8">${hr}h</text>` : ''}
+      `;
+    });
+    svg.innerHTML = out;
+  }
+
+  // --- 8. Ledger Table & Audit Modal ---
+  function renderLedger(trades) {
+    const tbody = document.getElementById('ledgerBody');
+    tbody.innerHTML = trades.slice(0, 50).map(t => {
+      const isWin = (t.r_multiple || 0) > 0.2;
+      const isLoss = (t.r_multiple || 0) < -0.2;
+      const badgeCls = isWin ? 'win' : (isLoss ? 'loss' : 'c2c');
       return `
-        <div class="trade-row" onclick="openModal('${t.trade_id}')">
-          <div class="trade-left">
-            <div class="trade-icon ${isLong ? 'long' : 'short'}">
-              ${isLong ? '↗' : '↘'}
-            </div>
-            <div>
-              <div class="trade-info-title">${t.setup_type || t.direction}</div>
-              <div class="trade-info-sub">${(t.entry_time || '').substring(5, 16)} · Entry: $${t.entry_price || 0}</div>
-            </div>
-          </div>
-          <div class="trade-right">
-            <div class="trade-pnl ${isWin ? 'win' : 'loss'}">
-              ${isWin ? '+' : ''}$${(t.net_pnl || 0).toFixed(2)}
-            </div>
-            <div class="trade-r">${(t.r_multiple || 0) >= 0 ? '+' : ''}${t.r_multiple || 0}R</div>
-          </div>
-        </div>
+        <tr onclick="openAudit('${t.trade_id}')" style="cursor:pointer;">
+          <td><strong>${t.trade_id}</strong></td>
+          <td><span class="badge ${t.direction === 'LONG' ? 'long' : 'short'}">${t.direction}</span></td>
+          <td style="color:var(--text-muted);">${t.setup_type || '-'}</td>
+          <td>$${t.entry_price || 0}</td>
+          <td>$${t.exit_price || '-'}</td>
+          <td><span class="badge ${badgeCls}">${t.r_multiple >= 0 ? '+' : ''}${t.r_multiple || 0}R</span></td>
+          <td style="font-weight:700; color:${t.net_pnl >= 0 ? 'var(--green-text)' : 'var(--red-text)'};">${t.net_pnl >= 0 ? '+' : ''}$${t.net_pnl || 0}</td>
+          <td style="font-size:11px; color:var(--text-muted);">${t.exit_reason || '-'}</td>
+        </tr>
       `;
     }).join('');
   }
 
-  function openModal(tradeId) {
-    const t = allTrades.find(x => x.trade_id === tradeId);
+  function filterLedger() {
+    const q = document.getElementById('tableSearch').value.toLowerCase();
+    const filtered = tradesList.filter(t => 
+      t.trade_id.toLowerCase().includes(q) || 
+      (t.setup_type && t.setup_type.toLowerCase().includes(q)) ||
+      t.direction.toLowerCase().includes(q)
+    );
+    renderLedger(filtered);
+  }
+
+  function openAudit(id) {
+    const t = tradesList.find(x => x.trade_id === id);
     if (!t) return;
-    document.getElementById('modalTradeId').innerText = `Trade Audit: ${t.trade_id}`;
-    document.getElementById('modalContent').innerHTML = `
+    document.getElementById('modalId').innerText = `Trade Audit: ${t.trade_id}`;
+    document.getElementById('modalBody').innerHTML = `
+      <p><strong>Setup:</strong> ${t.setup_type}</p>
       <p><strong>Direction:</strong> ${t.direction}</p>
-      <p><strong>Setup Type:</strong> ${t.setup_type}</p>
       <p><strong>Entry:</strong> $${t.entry_price} (${t.entry_time})</p>
       <p><strong>Exit:</strong> $${t.exit_price || '-'} (${t.exit_time || '-'})</p>
-      <p><strong>Realized R:</strong> ${t.r_multiple}R</p>
+      <p><strong>R Realized:</strong> ${t.r_multiple}R</p>
       <p><strong>Net P&L:</strong> $${t.net_pnl}</p>
       <p><strong>Exit Reason:</strong> ${t.exit_reason}</p>
     `;
     document.getElementById('auditModal').style.display = 'flex';
   }
 
-  function closeModal(e) {
+  function closeModal() {
     document.getElementById('auditModal').style.display = 'none';
   }
 
-  function toggleFullLog() {
-    renderTrades(allTrades);
+  function getFallbackData() {
+    return {
+      metrics: { net_profit: 20568.72, win_rate: 61.4, winning_trades: 54, losing_trades: 34, profit_factor: 2.45, sharpe_ratio: 2.31, max_drawdown_pct: 4.82, max_drawdown: 840, expectancy_R: 0.92, avg_holding_minutes: 38.5 },
+      timeseries: { equity_curve: [10000, 10800, 10400, 11900, 12600, 14200, 16800, 18900, 20568.72] },
+      trades: [
+        { trade_id: "TR_001", direction: "LONG", setup_type: "LONG_BREAKOUT", entry_time: "2026-08-03 14:35", exit_time: "2026-08-03 15:10", entry_price: 18450.25, exit_price: 18520.00, r_multiple: 4.0, net_pnl: 697.50, exit_reason: "TRAILING_STOP_HIT" },
+        { trade_id: "TR_002", direction: "SHORT", setup_type: "SHORT_AFTER_UPSWEEP", entry_time: "2026-08-04 10:20", exit_time: "2026-08-04 11:05", entry_price: 18490.00, exit_price: 18445.00, r_multiple: 3.0, net_pnl: 450.00, exit_reason: "TRAILING_STOP_HIT" },
+        { trade_id: "TR_003", direction: "LONG", setup_type: "LONG_BREAKOUT", entry_time: "2026-08-05 09:45", exit_time: "2026-08-05 10:00", entry_price: 18320.00, exit_price: 18305.00, r_multiple: -1.0, net_pnl: -150.00, exit_reason: "INITIAL_STOP_HIT" },
+        { trade_id: "TR_004", direction: "SHORT", setup_type: "SHORT_BREAKOUT", entry_time: "2026-08-06 13:40", exit_time: "2026-08-06 14:50", entry_price: 18380.00, exit_price: 18260.00, r_multiple: 6.0, net_pnl: 1200.00, exit_reason: "TRAILING_STOP_HIT" }
+      ]
+    };
   }
 
-  window.addEventListener('DOMContentLoaded', loadDashboard);
+  window.addEventListener('DOMContentLoaded', init);
 </script>
 </body>
 </html>
