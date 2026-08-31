@@ -9,7 +9,7 @@
   <style>
     :root {
       --bg: #F8FAFC;
-      --sidebar-bg: #FFFFFF;
+      --nav-bg: #FFFFFF;
       --card: #FFFFFF;
       --card-sub: #F1F5F9;
       --border: #E2E8F0;
@@ -41,115 +41,91 @@
       font-family: 'Plus Jakarta Sans', sans-serif;
       background: var(--bg);
       color: var(--text);
-      display: flex;
       min-height: 100vh;
+      display: flex;
+      flex-direction: column;
       -webkit-font-smoothing: antialiased;
     }
 
-    /* Minimal Left Sidebar */
-    .sidebar {
-      width: 250px;
-      background: var(--sidebar-bg);
-      border-right: 1px solid var(--border);
-      padding: 28px 18px;
+    /* Top Navigation Bar */
+    .top-navbar {
+      background: var(--nav-bg);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 12px 24px;
+      box-shadow: 0 2px 10px rgba(15, 23, 42, 0.03);
+    }
+    .nav-container {
+      max-width: 1350px;
+      margin: 0 auto;
       display: flex;
-      flex-direction: column;
+      align-items: center;
       justify-content: space-between;
-      position: fixed;
-      top: 0; bottom: 0; left: 0;
-      z-index: 50;
+      gap: 16px;
+      flex-wrap: wrap;
     }
     .brand-wrap {
       display: flex;
       align-items: center;
-      gap: 12px;
-      margin-bottom: 32px;
-      padding: 0 8px;
+      gap: 10px;
     }
     .brand-avatar {
-      width: 38px; height: 38px; border-radius: 10px;
+      width: 36px; height: 36px; border-radius: 10px;
       background: #0F172A; color: #FFF;
       display: flex; align-items: center; justify-content: center;
-      font-weight: 800; font-size: 14px;
+      font-weight: 800; font-size: 13px;
     }
     .brand-title { font-size: 15px; font-weight: 800; }
     .brand-sub { font-size: 11px; color: var(--text-muted); font-weight: 600; }
 
-    .nav-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
-    .nav-item {
-      display: flex; align-items: center; gap: 12px;
-      padding: 12px 14px;
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--card-sub);
+      padding: 4px;
       border-radius: var(--radius-pill);
-      font-size: 14px; font-weight: 700;
+      border: 1px solid var(--border);
+    }
+    .nav-item {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 16px;
+      border-radius: var(--radius-pill);
+      font-size: 13px; font-weight: 700;
       color: var(--text-muted);
       cursor: pointer;
       transition: all 0.15s;
     }
-    .nav-item:hover { background: var(--card-sub); color: var(--text); }
+    .nav-item:hover { color: var(--text); }
     .nav-item.active { background: #0F172A; color: #FFFFFF; }
-    .nav-icon { width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-    .nav-icon svg { width: 18px; height: 18px; }
     .icon { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
-    .icon.icon-md { width: 18px; height: 18px; }
+    .icon.icon-md { width: 16px; height: 16px; }
 
-    .sidebar-footer {
-      padding: 14px;
-      background: var(--card-sub);
-      border-radius: var(--radius-md);
-      font-size: 11px;
-      color: var(--text-muted);
-      font-weight: 600;
-      line-height: 1.5;
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .tz-badge {
+      background: #EEF2F6; color: #0F172A; font-size: 11px;
+      font-weight: 700; padding: 4px 10px; border-radius: var(--radius-pill);
     }
 
-    /* Main Content Wrapper */
+    /* Main Container */
     .main-wrapper {
-      margin-left: 250px;
+      max-width: 1350px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 24px 20px 48px;
       flex: 1;
-      padding: 28px 24px;
-      max-width: 1400px;
-    }
-    /* Mobile top bar (hidden on desktop) */
-    .mobile-topbar {
-      display: none;
-      position: fixed; top: 0; left: 0; right: 0; z-index: 60;
-      align-items: center; gap: 10px;
-      padding: 14px 18px;
-      background: var(--sidebar-bg);
-      border-bottom: 1px solid var(--border);
-    }
-    .mobile-topbar .brand-avatar { width: 30px; height: 30px; font-size: 12px; }
-    .mobile-topbar .brand-title { font-size: 14px; }
-
-    @media (max-width: 900px) {
-      body { flex-direction: column; }
-      .mobile-topbar { display: flex; }
-      .sidebar {
-        position: fixed; width: 100%; height: auto;
-        top: auto; bottom: 0; left: 0; right: 0;
-        border-right: none; border-top: 1px solid var(--border);
-        flex-direction: row; align-items: stretch; padding: 6px 4px;
-        padding-bottom: max(6px, env(safe-area-inset-bottom));
-        box-shadow: 0 -4px 16px rgba(15, 23, 42, 0.06);
-      }
-      .sidebar > div:first-child { display: contents; }
-      .brand-wrap { display: none; }
-      .sidebar-footer { display: none; }
-      .nav-list { flex-direction: row; width: 100%; justify-content: space-around; gap: 2px; }
-      .nav-item {
-        flex-direction: column; gap: 3px; padding: 8px 10px;
-        border-radius: var(--radius-md); font-size: 10px; flex: 1;
-        justify-content: center; text-align: center;
-      }
-      .nav-icon { width: 20px; height: 20px; margin: 0 auto; }
-      .nav-icon svg { width: 20px; height: 20px; }
-      .main-wrapper { margin-left: 0; padding: 76px 16px 92px; }
     }
 
     .page-section { display: none; }
     .page-section.active { display: block; }
 
-    /* Hero Card */
+    /* Hero Overview Card */
     .hero-card {
       background: var(--card);
       border-radius: var(--radius-lg);
@@ -164,7 +140,6 @@
       gap: 20px;
     }
     .hero-tag { font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.8px; }
-    .tz-badge { background: #EEF2F6; color: #0F172A; font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: var(--radius-pill); }
     .hero-balance-wrap { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-top: 4px; }
     .hero-balance { font-size: 38px; font-weight: 800; letter-spacing: -1px; }
     .hero-currency { font-size: 20px; font-weight: 700; color: var(--text-muted); }
@@ -184,7 +159,7 @@
     .btn-pill.sec { background: var(--card-sub); color: var(--text); border: 1px solid var(--border); }
     .btn-pill.sec:hover { background: #E2E8F0; }
 
-    /* KPI Grid */
+    /* KPI Summary Grid */
     .kpi-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -198,7 +173,7 @@
     .kpi-val { font-size: 22px; font-weight: 800; font-family: 'JetBrains Mono', monospace; }
     .kpi-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; font-weight: 600; }
 
-    /* Calendar & Charts */
+    /* TradeZella Calendar */
     .calendar-card {
       background: var(--card); border: 1px solid var(--border);
       border-radius: var(--radius-lg); padding: 24px; box-shadow: var(--shadow); margin-bottom: 20px;
@@ -221,7 +196,17 @@
     .cal-day.loss .cal-day-pnl { color: var(--red-text); }
     .cal-day-trades { font-size: 10px; font-weight: 700; color: var(--text-muted); }
 
+    /* Chart Layout */
     .grid-2col { display: grid; grid-template-columns: repeat(auto-fit, minmax(440px, 1fr)); gap: 18px; margin-bottom: 20px; }
+    @media (max-width: 900px) {
+      .grid-2col { grid-template-columns: 1fr; }
+      .nav-container { flex-direction: column; align-items: stretch; }
+      .nav-links { justify-content: center; }
+      .cal-grid { gap: 4px; }
+      .cal-day { min-height: 64px; padding: 4px; }
+      .cal-day-pnl { font-size: 11px; }
+    }
+
     .chart-card {
       background: var(--card); border: 1px solid var(--border);
       border-radius: var(--radius-lg); padding: 22px; box-shadow: var(--shadow-sm);
@@ -233,7 +218,7 @@
     .svg-box { width: 100%; height: 240px; position: relative; }
     svg { width: 100%; height: 100%; overflow: visible; }
 
-    /* Interactive Floating Tooltip */
+    /* Floating Tooltip */
     #chartTooltip {
       position: fixed;
       display: none;
@@ -270,21 +255,31 @@
     }
     .control-slider { width: 100%; margin-top: 12px; accent-color: #0F172A; cursor: pointer; }
 
-    /* Guide Page Styling */
+    /* Strategy Documentation Guide */
     .guide-card {
       background: var(--card); border: 1px solid var(--border);
-      border-radius: var(--radius-lg); padding: 28px; box-shadow: var(--shadow);
+      border-radius: var(--radius-lg); padding: 32px; box-shadow: var(--shadow);
       margin-bottom: 24px;
     }
-    .rule-pill {
-      background: var(--blue-bg); color: var(--blue);
-      font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: var(--radius-pill);
-      display: inline-block; margin-bottom: 8px;
+    .guide-section {
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 24px;
+      margin-bottom: 24px;
     }
-    .candle-diagram-box {
-      background: #0D1117; border-radius: var(--radius-md); padding: 20px;
-      margin: 16px 0; display: flex; justify-content: center;
+    .guide-section:last-child { border-bottom: none; padding-bottom: 0; margin-bottom: 0; }
+    .guide-header {
+      font-size: 18px; font-weight: 800; margin-bottom: 12px; color: var(--text);
+      display: flex; align-items: center; gap: 8px;
     }
+    .guide-body {
+      font-size: 14px; line-height: 1.7; color: #334155;
+    }
+    .rule-box {
+      background: var(--card-sub); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 16px 20px; margin: 12px 0;
+    }
+    .rule-title { font-weight: 700; color: var(--text); margin-bottom: 4px; font-size: 14px; }
+    .rule-desc { font-size: 13px; color: var(--text-muted); }
 
     /* Table */
     .ledger-card {
@@ -351,41 +346,36 @@
     </defs>
   </svg>
 
-  <!-- Mobile Top Bar -->
-  <div class="mobile-topbar">
-    <div class="brand-avatar">NQ</div>
-    <div class="brand-title">NASDAQ Hub</div>
-  </div>
-
-  <!-- Left Sidebar Navigation -->
-  <aside class="sidebar">
-    <div>
+  <!-- Top Navbar -->
+  <header class="top-navbar">
+    <div class="nav-container">
       <div class="brand-wrap">
         <div class="brand-avatar">NQ</div>
         <div>
-          <div class="brand-title">NASDAQ Hub</div>
-          <div class="brand-sub">Multi-Timeframe Engine</div>
+          <div class="brand-title">NASDAQ Backtest Hub</div>
+          <div class="brand-sub">Multi-Timeframe Strategy Engine</div>
         </div>
       </div>
-      <ul class="nav-list">
-        <li class="nav-item active" onclick="switchTab('overview', this)">
-          <span class="nav-icon"><svg class="icon icon-md"><use href="#icon-overview"/></svg></span> Overview
-        </li>
-        <li class="nav-item" onclick="switchTab('simulator', this)">
-          <span class="nav-icon"><svg class="icon icon-md"><use href="#icon-zap"/></svg></span> Capital Simulator
-        </li>
-        <li class="nav-item" onclick="switchTab('guide', this)">
-          <span class="nav-icon"><svg class="icon icon-md"><use href="#icon-book"/></svg></span> Strategy Guide
-        </li>
-      </ul>
-    </div>
-    <div class="sidebar-footer">
-      America/New_York (EST)<br>
-      Dynamic % Sizing Active
-    </div>
-  </aside>
 
-  <!-- Main Content -->
+      <nav class="nav-links">
+        <div class="nav-item active" onclick="switchTab('overview', this)">
+          <svg class="icon icon-md"><use href="#icon-overview"/></svg> Overview
+        </div>
+        <div class="nav-item" onclick="switchTab('simulator', this)">
+          <svg class="icon icon-md"><use href="#icon-zap"/></svg> Capital Simulator
+        </div>
+        <div class="nav-item" onclick="switchTab('guide', this)">
+          <svg class="icon icon-md"><use href="#icon-book"/></svg> Strategy Guide
+        </div>
+      </nav>
+
+      <div class="nav-right">
+        <span class="tz-badge">America/New_York (EST)</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Wrapper -->
   <main class="main-wrapper">
 
     <!-- TAB 1: OVERVIEW -->
@@ -393,8 +383,8 @@
       <div class="hero-card">
         <div>
           <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
-            <span class="hero-tag">NASDAQ Futures · Overview</span>
-            <span class="tz-badge">EST/EDT Time</span>
+            <span class="hero-tag">NASDAQ Futures · Strategy Overview</span>
+            <span class="tz-badge">EST/EDT Timezone</span>
           </div>
           <div class="hero-balance-wrap">
             <div class="hero-balance" id="heroCurrentEquity">$10,000.00</div>
@@ -452,7 +442,7 @@
         <div class="cal-grid" id="calGrid"></div>
       </div>
 
-      <!-- 6 Interactive Visual Charts with Tooltips & Zoom Controls -->
+      <!-- 6 Charts with Tooltips & Zoom Controls -->
       <div class="grid-2col">
         <!-- Chart 1: Equity Curve -->
         <div class="chart-card">
@@ -465,7 +455,7 @@
           <div class="svg-box"><svg id="svgEquity" viewBox="0 0 500 240"></svg></div>
         </div>
 
-        <!-- Chart 2: Trade-by-Trade Performance with Zoom Controls -->
+        <!-- Chart 2: Trade-by-Trade Performance -->
         <div class="chart-card">
           <div class="chart-header-row">
             <div>
@@ -581,107 +571,119 @@
       </div>
     </section>
 
-    <!-- TAB 3: STRATEGY RULES & VISUAL CANDLE SETUPS -->
+    <!-- TAB 3: STRATEGY RULES & DOCUMENTATION (DETAILED TEXT IN ENGLISH) -->
     <section id="tab-guide" class="page-section">
       <div class="guide-card">
-        <div class="rule-pill">STRATEGY HIERARCHY</div>
-        <h2 style="font-size: 22px; font-weight: 800; margin-bottom: 8px;">1H Reference → 15M Intent → 5M Confirmation → 1M Entry → Trailing SL</h2>
-        <p style="color: var(--text-muted); font-size: 14px; line-height: 1.6;">
-          Engine multi-timeframe rules ko follow karta hai. 5M sweeps ko independent reversal nahi mana jata, aur profits book karne ke badle <strong>Dynamic Multi-R Trailing Stop</strong> se trade ko maximize kiya jata hai.
-        </p>
-
-        <!-- Visual Setup 1: 15M Bullish Breakout -->
-        <div style="margin-top: 32px;">
-          <h3 style="font-size: 16px; font-weight: 800; color: var(--green-text);">1. Setup A: 15M Bullish Breakout (LONG)</h3>
-          <p style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">
-            1H candle complete hone ke baad, agla 15M candle 1H High ke upar break & close hota hai. 5M confirmation ke baad 1M bar open par Long entry hoti hai.
-          </p>
-          <div class="candle-diagram-box">
-            <svg viewBox="0 0 540 200" style="width:100%; max-width:540px; height:180px;">
-              <!-- 1H High Reference Line -->
-              <line x1="20" y1="100" x2="520" y2="100" stroke="#00E5FF" stroke-width="1.5" stroke-dasharray="4,4"/>
-              <text x="30" y="92" fill="#00E5FF" font-size="11" font-weight="700">1H REFERENCE HIGH (18,050)</text>
-
-              <!-- 1H Candle (Neutral Grey) -->
-              <line x1="80" y1="95" x2="80" y2="175" stroke="#64748B" stroke-width="2"/>
-              <rect x="70" y="110" width="20" height="50" fill="#64748B"/>
-              <text x="80" y="190" fill="#94A3B8" font-size="10" text-anchor="middle">Completed 1H</text>
-
-              <!-- 15M Breakout Candle (Green) -->
-              <line x1="180" y1="70" x2="180" y2="140" stroke="#10B981" stroke-width="2"/>
-              <rect x="170" y="80" width="20" height="50" fill="#10B981"/>
-              <text x="180" y="60" fill="#10B981" font-size="10" font-weight="700" text-anchor="middle">15M Close > 1H High</text>
-
-              <!-- 5M Confirmation Candle -->
-              <line x1="280" y1="65" x2="280" y2="115" stroke="#10B981" stroke-width="2"/>
-              <rect x="270" y="70" width="20" height="35" fill="#10B981"/>
-              <text x="280" y="55" fill="#10B981" font-size="10" font-weight="700" text-anchor="middle">5M Confirmed</text>
-
-              <!-- 1M Entry Candle & SL -->
-              <line x1="380" y1="60" x2="380" y2="110" stroke="#38BDF8" stroke-width="2"/>
-              <rect x="372" y="68" width="16" height="30" fill="#38BDF8"/>
-              <circle cx="380" cy="68" r="4" fill="#38BDF8"/>
-              <text x="390" y="66" fill="#38BDF8" font-size="11" font-weight="800">BUY Entry (Next Open)</text>
-
-              <!-- Stop Loss Line -->
-              <line x1="360" y1="125" x2="440" y2="125" stroke="#EF4444" stroke-width="2"/>
-              <text x="445" y="129" fill="#EF4444" font-size="10" font-weight="700">Initial SL (Structure Low)</text>
-            </svg>
+        
+        <!-- Section 1: Overview -->
+        <div class="guide-section">
+          <div class="guide-header">1. Multi-Timeframe Strategy Hierarchy</div>
+          <div class="guide-body">
+            The strategy operates on a strict multi-timeframe confirmation pipeline to filter market noise and isolate high-probability trend expansions:
+            <div class="rule-box">
+              <div class="rule-title">Execution Sequence</div>
+              <div class="rule-desc"><strong>1H Completed Reference</strong> → <strong>15M Directional Intent</strong> → <strong>5M Breakdown/Breakout Confirmation</strong> → <strong>1M Entry Execution</strong> → <strong>Dynamic Multi-R Trailing Stop</strong></div>
+            </div>
           </div>
         </div>
 
-        <!-- Visual Setup 2: 15M Upside Sweep Reversal -->
-        <div style="margin-top: 32px;">
-          <h3 style="font-size: 16px; font-weight: 800; color: var(--red-text);">2. Setup B: 15M Upside Sweep Reversal (SHORT)</h3>
-          <p style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">
-            15M candle 1H High ko wick se sweep karta hai lekin 1H High ke **niche close** hota hai (Liquidity Grab). Downside confirmation par Short entry hoti hai.
-          </p>
-          <div class="candle-diagram-box">
-            <svg viewBox="0 0 540 200" style="width:100%; max-width:540px; height:180px;">
-              <!-- 1H High Reference Line -->
-              <line x1="20" y1="80" x2="520" y2="80" stroke="#00E5FF" stroke-width="1.5" stroke-dasharray="4,4"/>
-              <text x="30" y="72" fill="#00E5FF" font-size="11" font-weight="700">1H REFERENCE HIGH</text>
-
-              <!-- 15M Sweep Candle (Red body, Long Upper Wick) -->
-              <line x1="160" y1="40" x2="160" y2="130" stroke="#EF4444" stroke-width="2"/>
-              <rect x="150" y="85" width="20" height="40" fill="#EF4444"/>
-              <text x="160" y="32" fill="#F59E0B" font-size="10" font-weight="700" text-anchor="middle">Sweep Wick > 1H High</text>
-              <text x="160" y="145" fill="#EF4444" font-size="10" text-anchor="middle">Close <= 1H High</text>
-
-              <!-- 5M Breakdown Confirmation -->
-              <line x1="270" y1="95" x2="270" y2="155" stroke="#EF4444" stroke-width="2"/>
-              <rect x="260" y="105" width="20" height="45" fill="#EF4444"/>
-              <text x="270" y="172" fill="#EF4444" font-size="10" font-weight="700" text-anchor="middle">5M Confirm Breakdown</text>
-
-              <!-- 1M Short Entry -->
-              <line x1="380" y1="120" x2="380" y2="170" stroke="#F43F5E" stroke-width="2"/>
-              <rect x="372" y="125" width="16" height="35" fill="#F43F5E"/>
-              <circle cx="380" cy="125" r="4" fill="#F43F5E"/>
-              <text x="390" y="123" fill="#F43F5E" font-size="11" font-weight="800">SELL Entry</text>
-
-              <!-- Stop Loss Line -->
-              <line x1="360" y1="70" x2="440" y2="70" stroke="#EF4444" stroke-width="2"/>
-              <text x="445" y="74" fill="#EF4444" font-size="10" font-weight="700">SL (Sweep High)</text>
-            </svg>
+        <!-- Section 2: 1H Reference -->
+        <div class="guide-section">
+          <div class="guide-header">2. Step 1: 1-Hour Completed Reference Framework</div>
+          <div class="guide-body">
+            <p>At the close of every hourly bar, the engine marks two critical institutional liquidity boundary levels:</p>
+            <ul style="margin: 8px 0 8px 20px;">
+              <li><strong>Reference High:</strong> The exact high price reached during the completed 1-Hour candle.</li>
+              <li><strong>Reference Low:</strong> The exact low price reached during the completed 1-Hour candle.</li>
+            </ul>
+            <p><em>Anti-Lookahead Rule:</em> An incomplete 1H candle is never used. The boundaries become valid only after the exact minute :00 hour close.</p>
           </div>
         </div>
 
-        <!-- Dynamic Trailing Ladder -->
-        <div style="margin-top: 32px;">
-          <h3 style="font-size: 16px; font-weight: 800;">3. Dynamic Multi-R Trailing Ladder</h3>
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-top: 12px;">
-            <div style="background:var(--card-sub); padding:16px; border-radius:var(--radius-md); border:1px solid var(--border);">
-              <div style="font-weight:800; font-size:14px; color:var(--blue);">Level 1: At +1R</div>
-              <div style="font-size:12px; color:var(--text-muted); margin-top:4px;">SL moved to <strong>+1R in Profit</strong>. 100% position remains open. Zero partial exit.</div>
+        <!-- Section 3: 15M Directional Classification -->
+        <div class="guide-section">
+          <div class="guide-header">3. Step 2: 15-Minute Directional Classification</div>
+          <div class="guide-body">
+            After the 1-Hour reference is finalized, subsequent completed 15-Minute bars determine market intent across 4 distinct categories:
+            
+            <div class="rule-box" style="border-left: 4px solid var(--green);">
+              <div class="rule-title">A. 15M Upside Breakout (LONG Intent)</div>
+              <div class="rule-desc">Condition: <code>15M High > 1H High</code> AND <code>15M Close > 1H High</code>. Confirms buyers have accepted prices above the reference level. Sets a directional plan for LONG.</div>
             </div>
-            <div style="background:var(--card-sub); padding:16px; border-radius:var(--radius-md); border:1px solid var(--border);">
-              <div style="font-weight:800; font-size:14px; color:var(--green);">Level 2: At +3R</div>
-              <div style="font-size:12px; color:var(--text-muted); margin-top:4px;">SL moved to <strong>+3R in Profit</strong>. Captures explosive trend legs.</div>
+
+            <div class="rule-box" style="border-left: 4px solid var(--red);">
+              <div class="rule-title">B. 15M Downside Breakout (SHORT Intent)</div>
+              <div class="rule-desc">Condition: <code>15M Low < 1H Low</code> AND <code>15M Close < 1H Low</code>. Confirms sellers have accepted prices below the reference level. Sets a directional plan for SHORT.</div>
             </div>
-            <div style="background:var(--card-sub); padding:16px; border-radius:var(--radius-md); border:1px solid var(--border);">
-              <div style="font-weight:800; font-size:14px; color:#6366F1;">Level 3: Post +3R</div>
-              <div style="font-size:12px; color:var(--text-muted); margin-top:4px;">Every +1R advancement trails the SL by +1R (+4R, +5R, +6R...) until stopped out.</div>
+
+            <div class="rule-box" style="border-left: 4px solid var(--yellow);">
+              <div class="rule-title">C. 15M Upside Sweep / Liquidity Grab (Potential SHORT Intent)</div>
+              <div class="rule-desc">Condition: <code>15M High > 1H High</code> AND <code>15M Close <= 1H High</code>. Indicates buyer rejection (liquidity sweep). Prepares for a short entry pending downside confirmation.</div>
             </div>
+
+            <div class="rule-box" style="border-left: 4px solid var(--yellow);">
+              <div class="rule-title">D. 15M Downside Sweep / Liquidity Grab (Potential LONG Intent)</div>
+              <div class="rule-desc">Condition: <code>15M Low < 1H Low</code> AND <code>15M Close >= 1H Low</code>. Indicates seller rejection (liquidity sweep). Prepares for a long entry pending upside confirmation.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 4: 5M Confirmation -->
+        <div class="guide-section">
+          <div class="guide-header">4. Step 3: 5-Minute Confirmation Protocol</div>
+          <div class="guide-body">
+            <p>Once a 15-minute directional plan is established, the engine awaits a completed 5-minute candle to confirm directional continuation past the reference extreme level.</p>
+            <div class="rule-box">
+              <div class="rule-title">Hard Rule on 5-Minute Sweeps</div>
+              <div class="rule-desc"><strong>5-Minute wicks or sweeps are strictly ignored as independent reversal signals.</strong> Only the 15-Minute timeframe has the authority to dictate directional sweeps or trend changes. The 5-Minute timeframe is used purely for structural confirmation.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 5: 1M Entry & Execution -->
+        <div class="guide-section">
+          <div class="guide-header">5. Step 4: 1-Minute Entry Execution & Stop Loss</div>
+          <div class="guide-body">
+            <ul style="margin: 8px 0 8px 20px;">
+              <li><strong>Execution Mode:</strong> Next Bar Open (`next_bar_open`). When 5M confirmation occurs, entry triggers immediately on the opening tick of the subsequent 1-minute candle.</li>
+              <li><strong>Structural Initial Stop Loss:</strong> Placed at the lowest swing point (for Longs) or highest swing point (for Shorts) of the preceding 1-minute structure + 1 buffer tick.</li>
+              <li><strong>Slippage & Cost Model:</strong> Every simulated execution includes realistic slippage and broker commissions deducted directly from gross P&L.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Section 6: Dynamic Multi-R Trailing Protocol -->
+        <div class="guide-section">
+          <div class="guide-header">6. Step 5: Dynamic Multi-R Trailing Stop Protocol</div>
+          <div class="guide-body">
+            <p>To eliminate arbitrary profit targets and capture extended runner trends, the strategy enforces strict non-partial multi-R trailing:</p>
+            
+            <div class="rule-box">
+              <div class="rule-title">Stage 1 (+1R Milestone)</div>
+              <div class="rule-desc">When price reaches <code>+1R</code> in profit: The Stop Loss is instantly moved to <strong>+1R in Profit</strong>. The position remains 100% open with zero partial profit taken.</div>
+            </div>
+
+            <div class="rule-box">
+              <div class="rule-title">Stage 2 (+3R Milestone)</div>
+              <div class="rule-desc">When price reaches <code>+3R</code> in profit: The Stop Loss advances to <strong>+3R in Profit</strong>, securing a significant win while letting the trade run.</div>
+            </div>
+
+            <div class="rule-box">
+              <div class="rule-title">Stage 3 (Post +3R Trailing Ladder)</div>
+              <div class="rule-desc">For every subsequent full +1R advancement (4R, 5R, 6R, 7R...): The Stop Loss trails forward by +1R (+4R, +5R, +6R...) until the market reverses into the trailing stop. There is no fixed take profit.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 7: Risk Management & Multi-Trade Lifecycle -->
+        <div class="guide-section">
+          <div class="guide-header">7. Step 6: Risk Management & Multi-Trade Lifecycle</div>
+          <div class="guide-body">
+            <ul style="margin: 8px 0 8px 20px;">
+              <li><strong>Dynamic Compounding Position Sizing:</strong> Contract sizing is calculated as a fixed percentage of current total account equity, automatically scaling position sizes as profits grow.</li>
+              <li><strong>Session & Hourly Boundary Survival:</strong> An active trade is never closed merely because a new hour opens or the trading session rolls over. Each trade manages its lifecycle independently until its trailing stop is hit.</li>
+              <li><strong>Concurrent Trade Independence:</strong> If a new valid hourly reference setup triggers while an older trade is still trailing, both trades run simultaneously with independent stop loss and risk tracking.</li>
+            </ul>
           </div>
         </div>
 
@@ -708,7 +710,7 @@
   let simTrades = [];
   let simStartingFund = 10000;
   let simRiskPercent = 1.0;
-  let tradeBarsZoomLimit = 30; // default view 30 trades
+  let tradeBarsZoomLimit = 30;
 
   const tooltip = document.getElementById('chartTooltip');
   function showTooltip(e, text) {
@@ -835,20 +837,17 @@
     document.getElementById('valMaxDdDollars').innerText = `-$${maxDdDollars.toFixed(2)}`;
     document.getElementById('valTotalTrades').innerText = simTrades.length;
 
-    // Profit Factor = gross profit / gross loss
     const grossProfit = simTrades.filter(t => t.net_pnl > 0).reduce((a, t) => a + t.net_pnl, 0);
     const grossLoss = Math.abs(simTrades.filter(t => t.net_pnl < 0).reduce((a, t) => a + t.net_pnl, 0));
     const profitFactor = grossLoss > 0 ? (grossProfit / grossLoss) : (grossProfit > 0 ? Infinity : 0);
     document.getElementById('valProfitFactor').innerText = isFinite(profitFactor) ? profitFactor.toFixed(2) : '∞';
 
-    // Expectancy (R) = average R-multiple across trades
     const rVals = simTrades.map(t => t.r_multiple || 0);
     const expectancyR = rVals.length ? (rVals.reduce((a, b) => a + b, 0) / rVals.length) : 0;
     const expEl = document.getElementById('valExpectancy');
     expEl.innerText = `${expectancyR >= 0 ? '+' : ''}${expectancyR.toFixed(2)}R`;
     expEl.style.color = expectancyR >= 0 ? 'var(--green)' : 'var(--red)';
 
-    // Sharpe ratio (per-trade returns, not annualized)
     const pnlVals = simTrades.map(t => t.net_pnl || 0);
     const meanPnl = pnlVals.length ? pnlVals.reduce((a, b) => a + b, 0) / pnlVals.length : 0;
     const variance = pnlVals.length ? pnlVals.reduce((a, b) => a + Math.pow(b - meanPnl, 2), 0) / pnlVals.length : 0;
@@ -856,7 +855,6 @@
     const sharpe = stdDev > 0 ? (meanPnl / stdDev) * Math.sqrt(pnlVals.length) : 0;
     document.getElementById('valSharpe').innerText = `Sharpe: ${sharpe.toFixed(2)}`;
 
-    // Avg Holding Time (minutes)
     const holdMinutes = simTrades.map(t => {
       const entry = new Date(t.entry_time), exit = new Date(t.exit_time || t.entry_time);
       const diff = (exit - entry) / 60000;
@@ -893,7 +891,7 @@
     renderTradeBarsChart(simTrades);
   }
 
-  // --- Calendar with Day Click Tooltips ---
+  // Calendar
   function renderCalendar(trades) {
     const grid = document.getElementById('calGrid');
     const year = currentCalDate.getFullYear();
@@ -941,7 +939,7 @@
     renderCalendar(simTrades);
   }
 
-  // --- Interactive Equity Curve with Cursor Tooltips ---
+  // Charts
   function renderEquityChart(points) {
     const svg = document.getElementById('svgEquity');
     if (!points || points.length < 2) return;
@@ -975,7 +973,6 @@
     `;
   }
 
-  // --- Trade-by-Trade Performance with Zoom & Hover Tooltips ---
   function renderTradeBarsChart(trades) {
     const svg = document.getElementById('svgTradeBars');
     let displayedTrades = trades;
@@ -1005,7 +1002,6 @@
     svg.innerHTML = bars;
   }
 
-  // --- Interactive Donut Charts with Hover ---
   function renderOutcomeDonut(trades) {
     const wins = trades.filter(t => (t.r_multiple || 0) > 0.2).length;
     const losses = trades.filter(t => (t.r_multiple || 0) < -0.2).length;
@@ -1041,7 +1037,6 @@
     svg.innerHTML = `${paths}<text x="${cx}" y="${cy+6}" text-anchor="middle" font-size="18" font-weight="800" fill="#0F172A">${total}</text>`;
   }
 
-  // --- Long vs Short Chart with Hover ---
   function renderLongShortChart(trades) {
     const svg = document.getElementById('svgLongShort');
     const longs = trades.filter(t => t.direction === 'LONG');
@@ -1069,7 +1064,6 @@
     `;
   }
 
-  // --- Hourly Session Performance with Hover ---
   function renderHourlyChart(trades) {
     const svg = document.getElementById('svgHourly');
     const hourMap = Array(24).fill(0);
@@ -1099,7 +1093,6 @@
     svg.innerHTML = out;
   }
 
-  // --- Ledger Table & Audit Modal ---
   function renderLedger(trades) {
     const tbody = document.getElementById('ledgerBody');
     tbody.innerHTML = trades.slice(0, 50).map(t => {
