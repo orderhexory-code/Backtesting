@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NASDAQ Strategy Backtest</title>
+  <title>NASDAQ Strategy Backtest (Real Data)</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
   <style>
@@ -47,7 +47,7 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* Minimal Text Navbar (No logo, no excess padding) */
+    /* Minimal Text Navbar */
     .top-navbar {
       background: var(--nav-bg);
       border-bottom: 1px solid var(--border);
@@ -202,7 +202,7 @@
     .svg-box { width: 100%; height: 230px; position: relative; }
     svg { width: 100%; height: 100%; overflow: visible; }
 
-    /* Floating Tooltip */
+    /* Tooltip */
     #chartTooltip {
       position: fixed;
       display: none;
@@ -219,7 +219,7 @@
       line-height: 1.5;
     }
 
-    /* Simulator Panel (Real-Time Reactive) */
+    /* Simulator Panel */
     .simulator-card {
       background: var(--card); border: 1px solid var(--border);
       border-radius: var(--radius-lg); padding: 24px; box-shadow: var(--shadow);
@@ -239,10 +239,9 @@
       font-size: 16px; font-weight: 700; font-family: 'JetBrains Mono', monospace; outline: none; margin-top: 4px;
     }
     .control-slider { width: 100%; margin-top: 10px; accent-color: #0F172A; cursor: pointer; }
-
     .preset-btns { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
 
-    /* Strategy Documentation Guide */
+    /* Strategy Guide */
     .guide-card {
       background: var(--card); border: 1px solid var(--border);
       border-radius: var(--radius-lg); padding: 28px; box-shadow: var(--shadow);
@@ -295,7 +294,7 @@
   <!-- Floating Global Tooltip -->
   <div id="chartTooltip"></div>
 
-  <!-- Minimal Text Navbar -->
+  <!-- Top Navbar -->
   <header class="top-navbar">
     <div class="nav-container">
       <div class="brand-text">NASDAQ Strategy Backtest</div>
@@ -319,12 +318,12 @@
         <div>
           <div class="hero-tag">Strategy Performance Overview</div>
           <div class="hero-balance-wrap">
-            <div class="hero-balance" id="heroCurrentEquity">$10,000.00</div>
+            <div class="hero-balance" id="heroCurrentEquity">$0.00</div>
             <div class="hero-currency">USD Balance</div>
             <div class="profit-pill" id="heroProfitPill">+$0.00 (+0.00%)</div>
           </div>
           <div class="capital-subline">
-            Starting Capital: <strong id="heroStartingFund">$10,000.00</strong> · Net Realized: <strong id="heroNetPnl">$0.00</strong>
+            Starting Capital: <strong id="heroStartingFund">$0.00</strong> · Net Realized: <strong id="heroNetPnl">$0.00</strong>
           </div>
         </div>
         <div>
@@ -470,7 +469,7 @@
       </div>
     </section>
 
-    <!-- TAB 2: CAPITAL SIMULATOR (LIVE REAL-TIME REACTIVE) -->
+    <!-- TAB 2: CAPITAL SIMULATOR -->
     <section id="tab-simulator" class="page-section">
       <div class="simulator-card">
         <div style="font-size:18px; font-weight:800; margin-bottom:4px;">Dynamic Capital Simulator & Risk Sizer</div>
@@ -491,13 +490,12 @@
             <div class="kpi-val" style="color:var(--red);" id="simLiveDd">-0.0%</div>
           </div>
           <div class="kpi-card" style="background:var(--card-sub);">
-            <div class="kpi-label">Average Position Size</div>
-            <div class="kpi-val" id="simLiveLots">1 Lot</div>
+            <div class="kpi-label">Position Size Range</div>
+            <div class="kpi-val" id="simLiveLots">1 Contract</div>
           </div>
         </div>
 
         <div class="sim-controls">
-          <!-- Starting Capital -->
           <div class="control-box">
             <div class="control-label">
               <span>Starting Capital ($ USD)</span>
@@ -513,7 +511,6 @@
             </div>
           </div>
 
-          <!-- Risk % -->
           <div class="control-box">
             <div class="control-label">
               <span>Risk Per Trade (% of Balance)</span>
@@ -537,7 +534,7 @@
       </div>
     </section>
 
-    <!-- TAB 3: STRATEGY RULES & DOCUMENTATION (STRUCTURED TEXT IN ENGLISH) -->
+    <!-- TAB 3: STRATEGY RULES & DOCUMENTATION (DETAILED TEXT IN ENGLISH) -->
     <section id="tab-guide" class="page-section">
       <div class="guide-card">
         
@@ -705,11 +702,14 @@
   async function init() {
     try {
       const res = await fetch('data.json');
-      if (!res.ok) throw new Error();
+      if (!res.ok) throw new Error('Data fetch failed');
       rawData = await res.json();
     } catch (e) {
-      rawData = getFallbackData();
+      console.error("Could not load data.json:", e);
+      document.getElementById('heroBalanceWrap').innerHTML = `<span style="color:var(--red); font-size:16px; font-weight:700;">Error: data.json not found. Run workflow to generate real backtest data.</span>`;
+      return;
     }
+
     baseTrades = JSON.parse(JSON.stringify(rawData.trades || []));
     simStartingFund = (rawData.meta && (rawData.meta.initial_balance || rawData.meta.initial_capital)) || 10000;
     
@@ -728,7 +728,6 @@
     if (el) el.classList.add('active');
   }
 
-  // --- Real-time Simulator Control Event Handlers ---
   function onFundSliderChange(val) {
     simStartingFund = parseFloat(val) || 10000;
     document.getElementById('simFundInput').value = simStartingFund;
@@ -774,13 +773,11 @@
     setRiskPreset(1.0);
   }
 
-  // --- Core Dynamic What-If Math Engine ---
   function recalculateSimulation() {
     let runningEquity = simStartingFund;
     let peakEquity = runningEquity;
     let maxDdDollars = 0;
     let maxDdPct = 0;
-    let totalLotsTraded = 0;
     const equityCurve = [{ eq: runningEquity, time: 'Start', pnl: 0 }];
     const pointValue = 2.0;
 
@@ -791,12 +788,10 @@
       let riskPoints = parseFloat(clone.initial_risk) || Math.abs(entryP - initialSl);
       if (!riskPoints || riskPoints <= 0) riskPoints = 10.0;
 
-      // Dynamic Lot Sizing
       const riskMoney = runningEquity * (simRiskPercent / 100.0);
       const riskPerContract = riskPoints * pointValue;
       const contracts = Math.max(1, Math.floor(riskMoney / (riskPerContract || 20)));
       clone.contracts = contracts;
-      totalLotsTraded += contracts;
 
       const rMult = parseFloat(clone.r_multiple) || 0;
       const pointsGained = rMult * riskPoints;
@@ -820,9 +815,10 @@
     const wins = simTrades.filter(t => t.net_pnl > 0).length;
     const losses = simTrades.filter(t => t.net_pnl <= 0).length;
     const winRate = simTrades.length ? ((wins / simTrades.length) * 100).toFixed(1) : 0;
-    const avgLots = simTrades.length ? (totalLotsTraded / simTrades.length).toFixed(1) : 1;
 
-    // Update Overview & Simulator Header Elements
+    const minLots = simTrades.length ? Math.min(...simTrades.map(t => t.contracts || 1)) : 1;
+    const maxLots = simTrades.length ? Math.max(...simTrades.map(t => t.contracts || 1)) : 1;
+
     document.getElementById('heroStartingFund').innerText = `$${simStartingFund.toLocaleString('en-US', {minimumFractionDigits:2})} USD`;
     document.getElementById('heroCurrentEquity').innerText = `$${runningEquity.toLocaleString('en-US', {minimumFractionDigits:2})}`;
     document.getElementById('heroNetPnl').innerText = `${netProfit >= 0 ? '+' : ''}$${netProfit.toLocaleString('en-US', {minimumFractionDigits:2})}`;
@@ -831,11 +827,10 @@
     pill.className = `profit-pill ${netProfit >= 0 ? 'win' : 'loss'}`;
     pill.innerText = `${netProfit >= 0 ? '+' : ''}$${netProfit.toFixed(2)} (${netProfit >= 0 ? '+' : ''}${returnPct.toFixed(2)}%)`;
 
-    // Live Simulator Tab Cards
     document.getElementById('simLiveEquity').innerText = `$${runningEquity.toLocaleString('en-US', {minimumFractionDigits:2})}`;
     document.getElementById('simLiveProfit').innerText = `${netProfit >= 0 ? '+' : ''}$${netProfit.toLocaleString('en-US', {minimumFractionDigits:2})} (${returnPct.toFixed(1)}%)`;
     document.getElementById('simLiveDd').innerText = `-${maxDdPct.toFixed(2)}% ($${Math.round(maxDdDollars)})`;
-    document.getElementById('simLiveLots').innerText = `${avgLots} Lots avg`;
+    document.getElementById('simLiveLots').innerText = minLots === maxLots ? `${minLots} Contract${minLots > 1 ? 's' : ''}` : `${minLots} – ${maxLots} Contracts`;
 
     document.getElementById('valWinRate').innerText = `${winRate}%`;
     document.getElementById('valWinLossCount').innerText = `${wins}W / ${losses}L`;
@@ -866,7 +861,7 @@
       const diff = (exit - entry) / 60000;
       return isFinite(diff) && diff >= 0 ? diff : null;
     }).filter(v => v !== null);
-    const avgHold = holdMinutes.length ? (holdMinutes.reduce((a, b) => a + b, 0) / holdMinutes.length) : (rawData?.metrics?.avg_holding_minutes || 0);
+    const avgHold = holdMinutes.length ? (holdMinutes.reduce((a, b) => a + b, 0) / holdMinutes.length) : 0;
     document.getElementById('valAvgHold').innerText = `${avgHold.toFixed(1)}m Hold`;
 
     renderCalendar(simTrades);
@@ -888,7 +883,6 @@
     renderTradeBarsChart(simTrades);
   }
 
-  // --- Calendar ---
   function renderCalendar(trades) {
     const grid = document.getElementById('calGrid');
     const year = currentCalDate.getFullYear();
@@ -936,7 +930,6 @@
     renderCalendar(simTrades);
   }
 
-  // --- Interactive Equity Curve ---
   function renderEquityChart(points) {
     const svg = document.getElementById('svgEquity');
     if (!points || points.length < 2) return;
@@ -970,7 +963,6 @@
     `;
   }
 
-  // --- Trade-by-Trade Performance ---
   function renderTradeBarsChart(trades) {
     const svg = document.getElementById('svgTradeBars');
     let displayedTrades = trades;
@@ -1000,7 +992,6 @@
     svg.innerHTML = bars;
   }
 
-  // --- Donut Charts ---
   function renderOutcomeDonut(trades) {
     const wins = trades.filter(t => (t.r_multiple || 0) > 0.2).length;
     const losses = trades.filter(t => (t.r_multiple || 0) < -0.2).length;
@@ -1036,7 +1027,6 @@
     svg.innerHTML = `${paths}<text x="${cx}" y="${cy+5}" text-anchor="middle" font-size="16" font-weight="800" fill="#0F172A">${total}</text>`;
   }
 
-  // --- Long vs Short ---
   function renderLongShortChart(trades) {
     const svg = document.getElementById('svgLongShort');
     const longs = trades.filter(t => t.direction === 'LONG');
@@ -1064,7 +1054,6 @@
     `;
   }
 
-  // --- Hourly P&L ---
   function renderHourlyChart(trades) {
     const svg = document.getElementById('svgHourly');
     const hourMap = Array(24).fill(0);
@@ -1094,7 +1083,6 @@
     svg.innerHTML = out;
   }
 
-  // --- Ledger Table ---
   function renderLedger(trades) {
     const tbody = document.getElementById('ledgerBody');
     tbody.innerHTML = trades.slice(0, 50).map(t => {
@@ -1155,14 +1143,6 @@
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-  }
-
-  function getFallbackData() {
-    return {
-      meta: { initial_balance: 10000.0 },
-      metrics: { net_profit: 637.56, win_rate: 51.22, total_trades: 531, winning_trades: 272, losing_trades: 259, profit_factor: 1.07, max_drawdown_pct: 11.94, max_drawdown: 1302.46, expectancy_R: 0.33, avg_holding_minutes: 9.0 },
-      trades: []
-    };
   }
 
   window.addEventListener('DOMContentLoaded', init);
