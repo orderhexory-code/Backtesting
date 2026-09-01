@@ -1,21 +1,26 @@
-name: 1-Click NASDAQ Real Data Backtest & Live Report
+name: 1-Click NASDAQ 2.5-Year Backtest & Live Report
 
 on:
   workflow_dispatch:
     inputs:
-      symbol:
-        description: "Real Market Symbol"
+      data_mode:
+        description: "Backtest Dataset Duration"
         required: true
         type: choice
         options:
-          - "NQ=F"
-          - "QQQ"
-          - "MNQ=F"
-        default: "NQ=F"
-      days_to_fetch:
-        description: "Days of Real 1-Minute Data"
+          - "2.5_Years_Real_Historical (2024-2026)" # 2.5 Years Full Dataset (~250,000 bars)
+          - "Last_28_Days_Live_Market"             # Last 28 Days Live Intraday (Yahoo Finance)
+        default: "2.5_Years_Real_Historical (2024-2026)"
+      symbol:
+        description: "Instrument Symbol"
         required: true
-        default: "28"
+        type: choice
+        options:
+          - "MNQ"
+          - "QQQ"
+          - "NQ=F"
+          - "SPY"
+        default: "MNQ"
 
 permissions:
   contents: write
@@ -38,24 +43,36 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Install All Dependencies (Forced)
+      - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
           pip install pandas numpy pyarrow fastparquet pydantic pyyaml click plotly jinja2 tabulate yfinance requests
 
-      - name: Fetch Real 1M Data
+      - name: Fetch 2.5-Year / 30-Day Data
         run: |
           mkdir -p data/processed dashboard results
-          python -c "
+          if [ "${{ github.event.inputs.data_mode }}" = "2.5_Years_Real_Historical (2024-2026)" ]; then
+            python -c "
           from src.data_fetcher import FreeDataFetcher
-          FreeDataFetcher.fetch_real_30d_1m(
+          FreeDataFetcher.fetch_multiyear_real_1m(
               symbol='${{ github.event.inputs.symbol }}',
-              days=int('${{ github.event.inputs.days_to_fetch }}'),
+              start_year=2024,
+              end_year=2026,
               output_path='data/processed/MNQ_1m.parquet'
           )
           "
+          else
+            python -c "
+          from src.data_fetcher import FreeDataFetcher
+          FreeDataFetcher.fetch_real_30d_1m(
+              symbol='${{ github.event.inputs.symbol }}',
+              days=28,
+              output_path='data/processed/MNQ_1m.parquet'
+          )
+          "
+          fi
 
-      - name: Validate Data
+      - name: Validate Historical Data
         run: |
           python main.py validate-data --data data/processed/MNQ_1m.parquet --report-out results/data_quality.json
 
@@ -63,16 +80,16 @@ jobs:
         run: |
           python main.py backtest --data data/processed/MNQ_1m.parquet --config config/strategy.yaml --output-dir results/
 
-      - name: Upload Artifacts
+      - name: Upload Artifacts (Downloadable ZIP)
         uses: actions/upload-artifact@v4
         with:
-          name: backtest-data-${{ github.run_id }}
+          name: 2.5-year-backtest-data-${{ github.run_id }}
           path: results/
 
       - name: Setup GitHub Pages
         uses: actions/configure-pages@v4
 
-      - name: Upload Pages Artifact
+      - name: Upload Pages Artifact (From dashboard/ folder)
         uses: actions/upload-pages-artifact@v3
         with:
           path: "dashboard/"
