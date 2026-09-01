@@ -1,26 +1,21 @@
-name: 1-Click NASDAQ 2.5-Year Backtest & Live Report
+name: 1-Click NASDAQ Real Data Backtest & Live Report
 
 on:
   workflow_dispatch:
     inputs:
-      data_mode:
-        description: "Backtest Dataset Duration"
-        required: true
-        type: choice
-        options:
-          - "2.5_Years_Real_Historical (2024-2026)" # 2.5 Years Full Dataset (~250,000 bars)
-          - "Last_28_Days_Live_Market"             # Last 28 Days Live Intraday (Yahoo Finance)
-        default: "2.5_Years_Real_Historical (2024-2026)"
       symbol:
-        description: "Instrument Symbol"
+        description: "Real Market Symbol"
         required: true
         type: choice
         options:
-          - "MNQ"
-          - "QQQ"
-          - "NQ=F"
-          - "SPY"
-        default: "MNQ"
+          - "NQ=F"  # E-mini NASDAQ 100 Futures
+          - "QQQ"   # Invesco NASDAQ 100 ETF
+          - "MNQ=F" # Micro E-mini NASDAQ Futures
+        default: "NQ=F"
+      days_to_fetch:
+        description: "Days of Real 1-Minute Data (Max 28)"
+        required: true
+        default: "28"
 
 permissions:
   contents: write
@@ -48,42 +43,30 @@ jobs:
           python -m pip install --upgrade pip
           pip install pandas numpy pyarrow fastparquet pydantic pyyaml click plotly jinja2 tabulate yfinance requests
 
-      - name: Fetch 2.5-Year / 30-Day Data
+      - name: Download Real 1-Minute Historical Market Data
         run: |
           mkdir -p data/processed dashboard results
-          if [ "${{ github.event.inputs.data_mode }}" = "2.5_Years_Real_Historical (2024-2026)" ]; then
-            python -c "
-          from src.data_fetcher import FreeDataFetcher
-          FreeDataFetcher.fetch_multiyear_real_1m(
-              symbol='${{ github.event.inputs.symbol }}',
-              start_year=2024,
-              end_year=2026,
-              output_path='data/processed/MNQ_1m.parquet'
-          )
-          "
-          else
-            python -c "
+          python -c "
           from src.data_fetcher import FreeDataFetcher
           FreeDataFetcher.fetch_real_30d_1m(
               symbol='${{ github.event.inputs.symbol }}',
-              days=28,
+              days=int('${{ github.event.inputs.days_to_fetch }}'),
               output_path='data/processed/MNQ_1m.parquet'
           )
           "
-          fi
 
-      - name: Validate Historical Data
+      - name: Validate Real Market Data
         run: |
           python main.py validate-data --data data/processed/MNQ_1m.parquet --report-out results/data_quality.json
 
-      - name: Run Engine & Export dashboard/data.json
+      - name: Execute Multi-Timeframe Backtest
         run: |
           python main.py backtest --data data/processed/MNQ_1m.parquet --config config/strategy.yaml --output-dir results/
 
       - name: Upload Artifacts (Downloadable ZIP)
         uses: actions/upload-artifact@v4
         with:
-          name: 2.5-year-backtest-data-${{ github.run_id }}
+          name: real-data-backtest-report-${{ github.run_id }}
           path: results/
 
       - name: Setup GitHub Pages
