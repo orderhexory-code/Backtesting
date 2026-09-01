@@ -1,86 +1,36 @@
-"""Automated historical 1-minute data fetcher supporting 30-day live market and 2.5-year historical archives."""
+"""Automated real market 1-minute historical data fetcher."""
 from __future__ import annotations
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 import pandas as pd
-import numpy as np
 import yfinance as yf
 
 
 class FreeDataFetcher:
     @staticmethod
-    def fetch_multiyear_real_1m(
-        symbol: str = "QQQ",
-        start_year: int = 2024,
-        end_year: int = 2026,
-        output_path: str = "data/processed/MNQ_1m.parquet"
-    ) -> pd.DataFrame:
-        """
-        Ingests 2.5 years of continuous 1-minute historical data (2024 - mid 2026).
-        Downloads from open institutional financial parquet archives (HuggingFace / AlphaVantage / Databento mirrors).
-        """
-        print(f"[*] Ingesting 2.5-Year REAL 1-Minute Historical Data for '{symbol}' ({start_year} - {end_year})...")
-        
-        # High-liquidity multi-year institutional stream
-        # Generates exact tick-matched continuous bars when external API limits are reached
-        total_days = 620  # ~2.5 trading years
-        records = []
-        current_time = datetime(start_year, 1, 2, 9, 30, tzinfo=timezone.utc)
-        current_price = 405.0 if symbol in ["QQQ", "SPY"] else 16800.0
-        
-        np.random.seed(42)
-
-        for day in range(total_days):
-            if current_time.weekday() >= 5: # Skip weekends
-                current_time += timedelta(days=(7 - current_time.weekday()))
-                continue
-
-            # 390 1-minute bars per regular trading session (09:30 - 16:00 EST)
-            for m in range(390):
-                bar_time = current_time + timedelta(minutes=m)
-                o = current_price
-                delta = np.random.normal(0.05, 0.45)
-                c = o + delta
-                h = max(o, c) + abs(np.random.normal(0.2, 0.15))
-                l = min(o, c) - abs(np.random.normal(0.2, 0.15))
-                
-                records.append({
-                    "timestamp": bar_time,
-                    "open": round(o, 2),
-                    "high": round(h, 2),
-                    "low": round(l, 2),
-                    "close": round(c, 2),
-                    "volume": float(np.random.randint(500, 15000))
-                })
-                current_price = c
-
-            current_time += timedelta(days=1)
-
-        df = pd.DataFrame(records)
-        out = Path(output_path)
-        out.parent.mkdir(parents=True, exist_ok=True)
-        df.to_parquet(out, index=False)
-        print(f"[+] Loaded {len(df):,} continuous 1-minute bars across 2.5 years into: {out}\n")
-        return df
-
-    @staticmethod
     def fetch_real_30d_1m(
-        symbol: str = "QQQ",
+        symbol: str = "NQ=F",
         days: int = 28,
         output_path: str = "data/processed/MNQ_1m.parquet"
     ) -> pd.DataFrame:
-        """Downloads latest 28-day 1-minute live data from Yahoo Finance."""
+        """
+        Downloads 100% REAL 1-minute market candles from Yahoo Finance.
+        Uses rolling 5-day intervals to fetch up to 28-30 days of real intraday data.
+        """
         days = min(days, 29)
-        print(f"[*] Fetching 1-minute live data for '{symbol}' (Last {days} days)...")
+        print(f"[*] Fetching 100% REAL 1-minute data for '{symbol}' (Last {days} days)...")
 
         ticker = yf.Ticker(symbol)
         now = datetime.now(timezone.utc)
         all_chunks = []
-        step = 5
+
+        step = 5  # Safe 5-day chunk size per API request
         end_time = now
 
         for i in range(0, days, step):
             start_time = max(end_time - timedelta(days=step), now - timedelta(days=days))
+            print(f"    -> Downloading real market chunk: {start_time.strftime('%Y-%m-%d')} to {end_time.strftime('%Y-%m-%d')}")
+
             try:
                 chunk = ticker.history(
                     start=start_time.strftime("%Y-%m-%d"),
@@ -91,21 +41,23 @@ class FreeDataFetcher:
                 if not chunk.empty:
                     all_chunks.append(chunk)
             except Exception as e:
-                print(f"    [!] Chunk warning for {symbol}: {e}")
+                print(f"    [!] Chunk fetch warning: {e}")
 
             end_time = start_time
             if end_time <= (now - timedelta(days=days)):
                 break
 
         if not all_chunks:
+            print("    [*] Attempting direct single fetch...")
             df = ticker.history(period="7d", interval="1m", auto_adjust=False)
             if df.empty:
-                raise ValueError(f"No 1-minute data returned for symbol '{symbol}'.")
+                raise ValueError(f"Yahoo Finance returned 0 bars for '{symbol}'. Try symbol 'QQQ'.")
         else:
             df = pd.concat(all_chunks)
 
         df.reset_index(inplace=True)
 
+        # Standardize column headers
         rename_map = {}
         for col in df.columns:
             c = str(col).lower()
@@ -125,18 +77,25 @@ class FreeDataFetcher:
         df.rename(columns=rename_map, inplace=True)
         df = df[["timestamp", "open", "high", "low", "close", "volume"]].copy()
 
+        # Timezone UTC normalization
         if df["timestamp"].dt.tz is None:
             df["timestamp"] = df["timestamp"].dt.tz_localize(timezone.utc)
         else:
             df["timestamp"] = df["timestamp"].dt.tz_convert(timezone.utc)
 
+        # Deduplicate and sort chronologically
         df.drop_duplicates(subset=["timestamp"], inplace=True)
         df.sort_values("timestamp", inplace=True)
         df.dropna(subset=["open", "high", "low", "close"], inplace=True)
         df.reset_index(drop=True, inplace=True)
 
+        if len(df) == 0:
+            raise ValueError("No valid candles after cleaning.")
+
         out = Path(output_path)
         out.parent.mkdir(parents=True, exist_ok=True)
         df.to_parquet(out, index=False)
-        print(f"[+] 30-Day Download complete: {len(df):,} bars saved to {out}\n")
+
+        print(f"[+] SUCCESS: Fetched {len(df):,} REAL 1-minute candles from Yahoo Finance.")
+        print(f"[+] Date Range: {df['timestamp'].iloc[0]} to {df['timestamp'].iloc[-1]}\n")
         return df
